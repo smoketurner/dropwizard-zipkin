@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.smoketurner.dropwizard</groupId>
+        <artifactId>dropwizard-zipkin</artifactId>
+        <version>0.9.2-1-SNAPSHOT</version>
+    </parent>
+
+    <properties>
+        <brave.version>3.4.0</brave.version>
+    </properties>
+
+    <artifactId>zipkin-core</artifactId>
+    <name>Dropwizard Zipkin Bundle</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.kristofa</groupId>
+            <artifactId>brave-jersey2</artifactId>
+            <version>${brave.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.kristofa</groupId>
+            <artifactId>brave-spancollector-scribe</artifactId>
+            <version>${brave.version}</version>
+        </dependency>
+    </dependencies>
+</project>

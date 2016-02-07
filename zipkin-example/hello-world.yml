@@ -1,0 +1,39 @@
+# Zipkin-specific options.
+zipkin:
+
+  endpoint: 127.0.0.1:9410
+  collector: scribe
+  serviceHost: 127.0.0.1
+  servicePort: 8080
+
+zipkinClient:
+  serviceName: hello-world
+  timeout: 2s
+
+# HTTP-specific options.
+server:
+
+  applicationConnectors:
+    - type: http
+      port: 8080
+  
+  adminConnectors:
+    - type: http
+      port: 8180
+
+  requestLog:
+    appenders:
+      - type: console
+        timeZone: UTC
+        target: stdout
+
+logging:
+  level: INFO
+  loggers:
+    com.smoketurner.dropwizard.brave: DEBUG
+    com.example.helloworld: DEBUG
+    com.github.kristofa.brave: DEBUG
+  appenders:
+    - type: console
+      timeZone: UTC
+      target: stdout
