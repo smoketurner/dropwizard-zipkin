@@ -5,7 +5,7 @@ Dropwizard Zipkin Bundle
 [![Maven Central](https://img.shields.io/maven-central/v/com.smoketurner.dropwizard/dropwizard-zipkin.svg?style=flat-square)](https://maven-badges.herokuapp.com/maven-central/com.smoketurner.dropwizard/dropwizard-zipkin/)
 [![GitHub license](https://img.shields.io/github/license/smoketurner/dropwizard-zipkin.svg?style=flat-square)](https://github.com/smoketurner/dropwizard-zipkin/tree/master)
 
-A bundle for submitting tracing data to [Zipkin](http://zipkin.io) from Dropwizard applications.
+A bundle for submitting tracing data to [Zipkin](http://zipkin.io) from Dropwizard applications. Internally, this library uses [Brave](https://github.com/openzipkin/brave) to interface a Zipkin collector.
 
 Dependency Info
 ---------------
@@ -61,11 +61,21 @@ zipkin:
 
 Example Application
 -------------------
-This bundle includes a modified version of the `HelloWorldApplication` from Dropwizard's [Getting Started](http://www.dropwizard.io/0.9.2/docs/getting-started.html) documentation. You can execute this application by first starting Zipkin on your local machine then running:
+This bundle includes a modified version of the `HelloWorldApplication` from Dropwizard's [Getting Started](http://www.dropwizard.io/0.9.2/docs/getting-started.html) documentation.
+
+```xml
+<dependency>
+    <groupId>com.smoketurner.dropwizard</groupId>
+    <artifactId>zipkin-example</artifactId>
+    <version>0.9.2-1</version>
+</dependency>
+```
+
+You can execute this application by first starting Zipkin on your local machine then running:
 
 ```
 mvn clean package
-java -jar zipkin-example/target/zipkin-example-0.9.2-3-SNAPSHOT.jar server zipkin-example/hello-world.yml
+java -jar zipkin-example/target/zipkin-example-0.9.2-1.jar server zipkin-example/hello-world.yml
 ```
 
 This will start the application on port `8080` (admin port `8180`). This application demonstrations the following Zipkin integration points:
