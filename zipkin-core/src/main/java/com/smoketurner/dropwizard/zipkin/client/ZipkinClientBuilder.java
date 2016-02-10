@@ -55,7 +55,20 @@ public class ZipkinClientBuilder {
             @Nonnull final ZipkinClientConfiguration configuration) {
         final Client client = new JerseyClientBuilder(environment)
                 .using(configuration).build(configuration.getServiceName());
+        return build(configuration, client);
+    }
 
+    /**
+     * Instrument an existing Jersey client
+     * 
+     * @param configuration
+     *            Configuration to use for the client
+     * @param client
+     *            Jersey client
+     * @return an instrumented Jersey client
+     */
+    public Client build(@Nonnull final ZipkinClientConfiguration configuration,
+            @Nonnull final Client client) {
         final ServiceNameProvider serviceNameProvider = new StringServiceNameProvider(
                 configuration.getServiceName());
         final SpanNameProvider spanNameProvider = new DefaultSpanNameProvider();
