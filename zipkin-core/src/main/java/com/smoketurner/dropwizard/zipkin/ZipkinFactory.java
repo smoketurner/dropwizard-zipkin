@@ -44,9 +44,11 @@ public class ZipkinFactory {
 
     private static final Logger LOGGER = LoggerFactory
             .getLogger(ZipkinFactory.class);
+    private static final String DEFAULT_ZIPKIN_SCRIBE = "127.0.0.1:9140";
 
     @NotNull
-    private HostAndPort endpoint = HostAndPort.fromString("127.0.0.1:9140");
+    private HostAndPort endpoint = HostAndPort
+            .fromString(DEFAULT_ZIPKIN_SCRIBE);
 
     private String serviceName;
 
