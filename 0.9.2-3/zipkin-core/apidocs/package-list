@@ -1,0 +1,3 @@
+com.smoketurner.dropwizard.zipkin
+com.smoketurner.dropwizard.zipkin.client
+com.smoketurner.dropwizard.zipkin.metrics
