@@ -9,7 +9,7 @@
     </parent>
 
     <properties>
-        <brave.version>3.4.0</brave.version>
+        <brave.version>3.5.0</brave.version>
     </properties>
 
     <artifactId>zipkin-core</artifactId>
