@@ -34,5 +34,10 @@
             <artifactId>brave-spancollector-scribe</artifactId>
             <version>${brave.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.kristofa</groupId>
+            <artifactId>brave-spancollector-http</artifactId>
+            <version>${brave.version}</version>
+        </dependency>
     </dependencies>
 </project>

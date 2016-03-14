@@ -28,7 +28,9 @@ import com.github.kristofa.brave.EmptySpanCollector;
 import com.github.kristofa.brave.LoggingSpanCollector;
 import com.github.kristofa.brave.Sampler;
 import com.github.kristofa.brave.SpanCollector;
+import com.github.kristofa.brave.SpanCollectorMetricsHandler;
 import com.github.kristofa.brave.http.DefaultSpanNameProvider;
+import com.github.kristofa.brave.http.HttpSpanCollector;
 import com.github.kristofa.brave.jaxrs2.BraveContainerRequestFilter;
 import com.github.kristofa.brave.jaxrs2.BraveContainerResponseFilter;
 import com.github.kristofa.brave.scribe.ScribeSpanCollector;
@@ -135,16 +137,23 @@ public class ZipkinFactory {
      * @return Brave instance
      */
     public Brave build(@Nonnull final Environment environment) {
+        final SpanCollectorMetricsHandler metricsHandler = new DropwizardSpanCollectorMetricsHandler(
+                environment.metrics());
         final SpanCollector spanCollector;
         switch (collector) {
         case "scribe":
             final ScribeSpanCollectorParams params = new ScribeSpanCollectorParams();
-            params.setMetricsHandler(new DropwizardSpanCollectorMetricsHandler(
-                    environment.metrics()));
+            params.setMetricsHandler(metricsHandler);
             spanCollector = new ScribeSpanCollector(endpoint.getHostText(),
                     endpoint.getPort(), params);
             LOGGER.info("Connecting to Zipkin scribe span collector at <{}:{}>",
                     endpoint.getHostText(), endpoint.getPort());
+            break;
+        case "http":
+            spanCollector = HttpSpanCollector.create(
+                    String.format("http://%s:%d", endpoint.getHostText(),
+                            endpoint.getPort()),
+                    metricsHandler);
             break;
         case "empty":
             spanCollector = new EmptySpanCollector();
