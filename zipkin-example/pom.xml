@@ -13,16 +13,13 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.dropwizard</groupId>
-            <artifactId>dropwizard-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.dropwizard</groupId>
-            <artifactId>dropwizard-client</artifactId>
+            <groupId>com.smoketurner.dropwizard</groupId>
+            <artifactId>zipkin-core</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.smoketurner.dropwizard</groupId>
-            <artifactId>zipkin-core</artifactId>
+            <artifactId>zipkin-client</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

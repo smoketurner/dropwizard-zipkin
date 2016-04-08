@@ -2,7 +2,7 @@
 zipkin:
 
   endpoint: 127.0.0.1:9410
-  collector: scribe
+  collector: logging
   serviceHost: 127.0.0.1
   servicePort: 8080
 
@@ -30,7 +30,7 @@ server:
 logging:
   level: INFO
   loggers:
-    com.smoketurner.dropwizard.brave: DEBUG
+    com.smoketurner.dropwizard.zipkin: DEBUG
     com.example.helloworld: DEBUG
     com.github.kristofa.brave: DEBUG
   appenders:

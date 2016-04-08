@@ -8,23 +8,13 @@
         <version>0.9.2-4-SNAPSHOT</version>
     </parent>
 
-    <artifactId>zipkin-core</artifactId>
-    <name>Dropwizard Zipkin Bundle</name>
+    <artifactId>zipkin-client</artifactId>
+    <name>Dropwizard Zipkin Client</name>
 
     <dependencies>
         <dependency>
             <groupId>io.dropwizard</groupId>
-            <artifactId>dropwizard-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.kristofa</groupId>
-            <artifactId>brave-spancollector-scribe</artifactId>
-            <version>${brave.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.kristofa</groupId>
-            <artifactId>brave-spancollector-http</artifactId>
-            <version>${brave.version}</version>
+            <artifactId>dropwizard-client</artifactId>
         </dependency>
     </dependencies>
 </project>
