@@ -20,9 +20,6 @@ import javax.annotation.Nonnull;
 import javax.ws.rs.client.Client;
 import com.github.kristofa.brave.Brave;
 import com.github.kristofa.brave.http.DefaultSpanNameProvider;
-import com.github.kristofa.brave.http.ServiceNameProvider;
-import com.github.kristofa.brave.http.SpanNameProvider;
-import com.github.kristofa.brave.http.StringServiceNameProvider;
 import com.github.kristofa.brave.jaxrs2.BraveClientRequestFilter;
 import com.github.kristofa.brave.jaxrs2.BraveClientResponseFilter;
 import io.dropwizard.client.JerseyClientBuilder;
@@ -37,6 +34,8 @@ public class ZipkinClientBuilder {
      *
      * @param environment
      *            Environment
+     * @param brave
+     *            Brave instance
      */
     public ZipkinClientBuilder(@Nonnull final Environment environment,
             @Nonnull final Brave brave) {
@@ -55,31 +54,25 @@ public class ZipkinClientBuilder {
             @Nonnull final ZipkinClientConfiguration configuration) {
         final Client client = new JerseyClientBuilder(environment)
                 .using(configuration).build(configuration.getServiceName());
-        return build(configuration, client);
+        return build(client);
     }
 
     /**
      * Instrument an existing Jersey client
-     * 
-     * @param configuration
-     *            Configuration to use for the client
+     *
      * @param client
      *            Jersey client
      * @return an instrumented Jersey client
      */
-    public Client build(@Nonnull final ZipkinClientConfiguration configuration,
-            @Nonnull final Client client) {
-        final ServiceNameProvider serviceNameProvider = new StringServiceNameProvider(
-                configuration.getServiceName());
-        final SpanNameProvider spanNameProvider = new DefaultSpanNameProvider();
-
+    public Client build(@Nonnull final Client client) {
         // Register the request filter for outgoing client requests
-        client.register(new BraveClientRequestFilter(serviceNameProvider,
-                spanNameProvider, brave.clientRequestInterceptor()));
+        client.register(
+                new BraveClientRequestFilter(new DefaultSpanNameProvider(),
+                        brave.clientRequestInterceptor()));
 
         // Register the response filter for incoming client requests
-        client.register(new BraveClientResponseFilter(serviceNameProvider,
-                spanNameProvider, brave.clientResponseInterceptor()));
+        client.register(new BraveClientResponseFilter(
+                brave.clientResponseInterceptor()));
 
         return client;
     }
