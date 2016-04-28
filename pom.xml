@@ -7,7 +7,7 @@
 
     <groupId>com.smoketurner.dropwizard</groupId>
     <artifactId>dropwizard-zipkin</artifactId>
-    <version>0.9.2-5-SNAPSHOT</version>
+    <version>0.9.2-5</version>
     <packaging>pom</packaging>
 
     <name>dropwizard-zipkin</name>
@@ -49,7 +49,7 @@
         <connection>scm:git:git://github.com/smoketurner/dropwizard-zipkin.git</connection>
         <developerConnection>scm:git:git@github.com:smoketurner/dropwizard-zipkin.git</developerConnection>
         <url>https://github.com/smoketurner/dropwizard-zipkin</url>
-        <tag>HEAD</tag>
+        <tag>v0.9.2-5</tag>
     </scm>
 
     <distributionManagement>
