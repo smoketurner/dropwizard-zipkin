@@ -13,7 +13,7 @@ Dependency Info
 <dependency>
     <groupId>com.smoketurner.dropwizard</groupId>
     <artifactId>zipkin-core</artifactId>
-    <version>0.9.2-3</version>
+    <version>0.9.2-5</version>
 </dependency>
 ```
 
