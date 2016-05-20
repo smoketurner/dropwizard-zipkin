@@ -27,7 +27,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <file.encoding>UTF-8</file.encoding>
         <dropwizard.version>0.9.2</dropwizard.version>
-        <brave.version>3.7.0</brave.version>
+        <brave.version>3.8.0</brave.version>
     </properties>
 
     <modules>
@@ -107,7 +107,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.github.kristofa</groupId>
+            <groupId>io.zipkin.brave</groupId>
             <artifactId>brave-jersey2</artifactId>
             <version>${brave.version}</version>
         </dependency>
