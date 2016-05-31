@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.kristofa.brave.Brave;
+import com.github.kristofa.brave.kafka.KafkaSpanCollector;
 import com.github.kristofa.brave.EmptySpanCollector;
 import com.github.kristofa.brave.LoggingSpanCollector;
 import com.github.kristofa.brave.Sampler;
@@ -48,6 +49,9 @@ public class ZipkinFactory {
             .getLogger(ZipkinFactory.class);
     private static final String DEFAULT_ZIPKIN_SCRIBE = "127.0.0.1:9140";
 
+    private String bootstrapServers;
+    private String topic;
+
     @NotNull
     private HostAndPort endpoint = HostAndPort
             .fromString(DEFAULT_ZIPKIN_SCRIBE);
@@ -60,7 +64,7 @@ public class ZipkinFactory {
     @PortRange
     private Integer servicePort;
 
-    @OneOf(value = { "http", "logging", "scribe", "empty" })
+    @OneOf(value = { "http", "logging", "scribe", "empty", "kafka" })
     @NotEmpty
     private String collector = "logging";
 
@@ -125,9 +129,19 @@ public class ZipkinFactory {
     }
 
     @JsonProperty
-    public void setSampleRate(float sampleRate) {
-        this.sampleRate = sampleRate;
-    }
+    public void setSampleRate(float sampleRate) { this.sampleRate = sampleRate; }
+
+    @JsonProperty
+    public String getBootstrapServers() { return this.bootstrapServers; }
+
+    @JsonProperty
+    public void setBootstrapServers(String bootstrapServers) {  this.bootstrapServers = bootstrapServers; }
+
+    @JsonProperty
+    public String getTopic() { return this.topic; }
+
+    @JsonProperty
+    public void setTopic(String topic) { this.topic = topic; }
 
     /**
      * Build a new {@link Brave} instance for interfacing with Zipkin
@@ -157,6 +171,11 @@ public class ZipkinFactory {
             break;
         case "empty":
             spanCollector = new EmptySpanCollector();
+            break;
+        case "kafka":
+            KafkaSpanCollector.Config kafkaConfig = KafkaSpanCollector.Config.builder(bootstrapServers)
+                                                        .topic(topic).build();
+            spanCollector = KafkaSpanCollector.create(kafkaConfig, metricsHandler);
             break;
         case "logging":
         default:
