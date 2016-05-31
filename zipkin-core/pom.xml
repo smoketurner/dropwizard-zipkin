@@ -27,9 +27,9 @@
             <version>${brave.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.github.kristofa</groupId>
+            <groupId>io.zipkin.brave</groupId>
             <artifactId>brave-spancollector-kafka</artifactId>
-            <version>3.7.0</version>
+            <version>${brave.version}</version>
         </dependency>
     </dependencies>
 </project>
