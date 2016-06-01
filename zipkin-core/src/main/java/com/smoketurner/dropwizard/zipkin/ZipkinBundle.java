@@ -46,6 +46,6 @@ public abstract class ZipkinBundle<C extends Configuration>
     public void run(final C configuration, final Environment environment)
             throws Exception {
         final ZipkinFactory braveConfig = getZipkinFactory(configuration);
-        braveConfig.setSeviceName(serviceName);
+        braveConfig.setServiceName(serviceName);
     }
 }

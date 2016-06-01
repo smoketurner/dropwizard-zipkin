@@ -1,0 +1,5 @@
+com.smoketurner.dropwizard.zipkin.EmptyZipkinFactory
+com.smoketurner.dropwizard.zipkin.HttpZipkinFactory
+com.smoketurner.dropwizard.zipkin.KafkaZipkinFactory
+com.smoketurner.dropwizard.zipkin.LoggingZipkinFactory
+com.smoketurner.dropwizard.zipkin.ScribeZipkinFactory

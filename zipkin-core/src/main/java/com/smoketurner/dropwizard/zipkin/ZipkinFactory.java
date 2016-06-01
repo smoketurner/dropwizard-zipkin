@@ -15,217 +15,31 @@
  */
 package com.smoketurner.dropwizard.zipkin;
 
-import javax.annotation.Nonnull;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import org.hibernate.validator.constraints.NotEmpty;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.github.kristofa.brave.Brave;
-import com.github.kristofa.brave.EmptySpanCollector;
-import com.github.kristofa.brave.LoggingSpanCollector;
-import com.github.kristofa.brave.Sampler;
-import com.github.kristofa.brave.SpanCollector;
-import com.github.kristofa.brave.SpanCollectorMetricsHandler;
-import com.github.kristofa.brave.http.DefaultSpanNameProvider;
-import com.github.kristofa.brave.http.HttpSpanCollector;
-import com.github.kristofa.brave.jaxrs2.BraveContainerRequestFilter;
-import com.github.kristofa.brave.jaxrs2.BraveContainerResponseFilter;
-import com.github.kristofa.brave.kafka.KafkaSpanCollector;
-import com.github.kristofa.brave.scribe.ScribeSpanCollector;
-import com.github.kristofa.brave.scribe.ScribeSpanCollectorParams;
-import com.google.common.net.HostAndPort;
-import com.google.common.net.InetAddresses;
-import com.smoketurner.dropwizard.zipkin.metrics.DropwizardSpanCollectorMetricsHandler;
+import io.dropwizard.jackson.Discoverable;
 import io.dropwizard.setup.Environment;
-import io.dropwizard.validation.OneOf;
-import io.dropwizard.validation.PortRange;
 
-public class ZipkinFactory {
-
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(ZipkinFactory.class);
-    private static final String DEFAULT_ZIPKIN_SCRIBE = "127.0.0.1:9140";
-
-    @NotNull
-    private HostAndPort endpoint = HostAndPort
-            .fromString(DEFAULT_ZIPKIN_SCRIBE);
-
-    private String serviceName;
-
-    @NotEmpty
-    private String serviceHost;
-
-    @PortRange
-    private Integer servicePort;
-
-    @OneOf(value = { "http", "logging", "scribe", "empty", "kafka" })
-    @NotEmpty
-    private String collector = "logging";
-
-    @Min(0)
-    @Max(1)
-    @NotNull
-    private Float sampleRate = 1.0f;
-
-    @NotNull
-    private String bootstrapServers = "";
-
-    @NotEmpty
-    private String topic = "zipkin";
-
-    @JsonProperty
-    public HostAndPort getEndpoint() {
-        return endpoint;
-    }
-
-    @JsonProperty
-    public void setEndpoint(HostAndPort endpoint) {
-        this.endpoint = endpoint;
-    }
-
-    @JsonProperty
-    public String getServiceName() {
-        return serviceName;
-    }
-
-    @JsonProperty
-    public void setSeviceName(String serviceName) {
-        this.serviceName = serviceName;
-    }
-
-    @JsonProperty
-    public String getServiceHost() {
-        return serviceHost;
-    }
-
-    @JsonProperty
-    public void setServiceHost(String serviceHost) {
-        this.serviceHost = serviceHost;
-    }
-
-    @JsonProperty
-    public Integer getServicePort() {
-        return servicePort;
-    }
-
-    @JsonProperty
-    public void setServicePort(Integer servicePort) {
-        this.servicePort = servicePort;
-    }
-
-    @JsonProperty
-    public String getCollector() {
-        return collector;
-    }
-
-    @JsonProperty
-    public void setCollector(String collector) {
-        this.collector = collector;
-    }
-
-    @JsonProperty
-    public Float getSampleRate() {
-        return sampleRate;
-    }
-
-    @JsonProperty
-    public void setSampleRate(float sampleRate) {
-        this.sampleRate = sampleRate;
-    }
-
-    @JsonProperty
-    public String getBootstrapServers() {
-        return this.bootstrapServers;
-    }
-
-    @JsonProperty
-    public void setBootstrapServers(String bootstrapServers) {
-        this.bootstrapServers = bootstrapServers;
-    }
-
-    @JsonProperty
-    public String getTopic() {
-        return this.topic;
-    }
-
-    @JsonProperty
-    public void setTopic(String topic) {
-        this.topic = topic;
-    }
+/**
+ * A factory for building {@link Brave} instances for Dropwizard applications.
+ */
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "collector")
+public interface ZipkinFactory extends Discoverable {
 
     /**
-     * Build a new {@link Brave} instance for interfacing with Zipkin
+     * Build a Brave instance for the given Dropwizard application.
      *
      * @param environment
-     *            Environment
-     * @return Brave instance
+     *            the application's environment
+     * @return a {@link Brave} instance
      */
-    public Brave build(@Nonnull final Environment environment) {
-        final SpanCollectorMetricsHandler metricsHandler = new DropwizardSpanCollectorMetricsHandler(
-                environment.metrics());
-        final SpanCollector spanCollector;
+    Brave build(Environment environment);
 
-        switch (collector) {
-        case "scribe":
-            final ScribeSpanCollectorParams params = new ScribeSpanCollectorParams();
-            params.setMetricsHandler(metricsHandler);
-            spanCollector = new ScribeSpanCollector(endpoint.getHostText(),
-                    endpoint.getPort(), params);
-            LOGGER.info("Sending spans to Scribe collector at <{}:{}>",
-                    endpoint.getHostText(), endpoint.getPort());
-            break;
-        case "http":
-            spanCollector = HttpSpanCollector.create(
-                    String.format("http://%s:%d", endpoint.getHostText(),
-                            endpoint.getPort()),
-                    metricsHandler);
-            LOGGER.info("Sending spans to HTTP collector at <{}:{}>",
-                    endpoint.getHostText(), endpoint.getPort());
-            break;
-        case "empty":
-            spanCollector = new EmptySpanCollector();
-            break;
-        case "kafka":
-            final KafkaSpanCollector.Config kafkaConfig = KafkaSpanCollector.Config
-                    .builder(bootstrapServers).topic(topic).build();
-            spanCollector = KafkaSpanCollector.create(kafkaConfig,
-                    metricsHandler);
-            LOGGER.info("Sending spans to Kafka topic '{}' at: {}", topic,
-                    bootstrapServers);
-            break;
-        case "logging":
-        default:
-            spanCollector = new LoggingSpanCollector();
-            break;
-        }
-
-        LOGGER.info("Using Zipkin service ({}) at <{}:{}>", serviceName,
-                serviceHost, servicePort);
-
-        final Brave.Builder builder = new Brave.Builder(toInt(serviceHost),
-                servicePort, serviceName);
-        builder.spanCollector(spanCollector);
-        builder.traceSampler(Sampler.create(sampleRate));
-
-        final Brave brave = builder.build();
-
-        // Register the request filter for incoming server requests
-        environment.jersey()
-                .register(new BraveContainerRequestFilter(
-                        brave.serverRequestInterceptor(),
-                        new DefaultSpanNameProvider()));
-
-        // Register the response filter for outgoing server requests
-        environment.jersey().register(new BraveContainerResponseFilter(
-                brave.serverResponseInterceptor()));
-
-        return brave;
-    }
-
-    private static int toInt(final String ip) {
-        return InetAddresses.coerceToInteger(InetAddresses.forString(ip));
-    }
+    /**
+     * Set the name of this service.
+     *
+     * @param name
+     *            Service name
+     */
+    void setServiceName(String name);
 }

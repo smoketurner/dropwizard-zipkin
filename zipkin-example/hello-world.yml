@@ -1,8 +1,8 @@
 # Zipkin-specific options.
 zipkin:
 
-  endpoint: 127.0.0.1:9410
-  collector: logging
+  collector: http
+  endpoint: 127.0.0.1:9411
   serviceHost: 127.0.0.1
   servicePort: 8080
 
