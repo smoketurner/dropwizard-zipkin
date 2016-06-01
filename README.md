@@ -13,7 +13,7 @@ Dependency Info
 <dependency>
     <groupId>com.smoketurner.dropwizard</groupId>
     <artifactId>zipkin-core</artifactId>
-    <version>0.9.2-7</version>
+    <version>0.9.2-8</version>
 </dependency>
 ```
 
@@ -53,10 +53,12 @@ zipkin:
   servicePort: 8080
 
   # Optional properties
-  # Span collector to use (scribe, logging, or empty)
-  collector: scribe
-  # If using the scribe collector, provide the scribe endpoint
-  endpoint: 127.0.0.1:9410
+  # Span collector to use (scribe, logging, http, kafka or empty)
+  collector: http
+  # If using the scribe or http collector, provide the endpoint
+  endpoint: 127.0.0.1:9411
+  # If using the kafka collector, provide the Kafka bootstrap servers
+  bootstrapServers: 127.0.0.1:9092;10.0.1.1:9092
 ```
 
 Example Application
@@ -67,7 +69,7 @@ This bundle includes a modified version of the `HelloWorldApplication` from Drop
 <dependency>
     <groupId>com.smoketurner.dropwizard</groupId>
     <artifactId>zipkin-example</artifactId>
-    <version>0.9.2-7</version>
+    <version>0.9.2-8</version>
 </dependency>
 ```
 
@@ -75,7 +77,7 @@ You can execute this application by first starting Zipkin on your local machine 
 
 ```
 mvn clean package
-java -jar zipkin-example/target/zipkin-example-0.9.2-7.jar server zipkin-example/hello-world.yml
+java -jar zipkin-example/target/zipkin-example-0.9.2-8.jar server zipkin-example/hello-world.yml
 ```
 
 This will start the application on port `8080` (admin port `8180`). This application demonstrations the following Zipkin integration points:

@@ -24,7 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.kristofa.brave.Brave;
-import com.github.kristofa.brave.kafka.KafkaSpanCollector;
 import com.github.kristofa.brave.EmptySpanCollector;
 import com.github.kristofa.brave.LoggingSpanCollector;
 import com.github.kristofa.brave.Sampler;
@@ -34,6 +33,7 @@ import com.github.kristofa.brave.http.DefaultSpanNameProvider;
 import com.github.kristofa.brave.http.HttpSpanCollector;
 import com.github.kristofa.brave.jaxrs2.BraveContainerRequestFilter;
 import com.github.kristofa.brave.jaxrs2.BraveContainerResponseFilter;
+import com.github.kristofa.brave.kafka.KafkaSpanCollector;
 import com.github.kristofa.brave.scribe.ScribeSpanCollector;
 import com.github.kristofa.brave.scribe.ScribeSpanCollectorParams;
 import com.google.common.net.HostAndPort;
@@ -48,9 +48,6 @@ public class ZipkinFactory {
     private static final Logger LOGGER = LoggerFactory
             .getLogger(ZipkinFactory.class);
     private static final String DEFAULT_ZIPKIN_SCRIBE = "127.0.0.1:9140";
-
-    private String bootstrapServers;
-    private String topic;
 
     @NotNull
     private HostAndPort endpoint = HostAndPort
@@ -72,6 +69,12 @@ public class ZipkinFactory {
     @Max(1)
     @NotNull
     private Float sampleRate = 1.0f;
+
+    @NotNull
+    private String bootstrapServers = "";
+
+    @NotEmpty
+    private String topic = "zipkin";
 
     @JsonProperty
     public HostAndPort getEndpoint() {
@@ -129,19 +132,29 @@ public class ZipkinFactory {
     }
 
     @JsonProperty
-    public void setSampleRate(float sampleRate) { this.sampleRate = sampleRate; }
+    public void setSampleRate(float sampleRate) {
+        this.sampleRate = sampleRate;
+    }
 
     @JsonProperty
-    public String getBootstrapServers() { return this.bootstrapServers; }
+    public String getBootstrapServers() {
+        return this.bootstrapServers;
+    }
 
     @JsonProperty
-    public void setBootstrapServers(String bootstrapServers) {  this.bootstrapServers = bootstrapServers; }
+    public void setBootstrapServers(String bootstrapServers) {
+        this.bootstrapServers = bootstrapServers;
+    }
 
     @JsonProperty
-    public String getTopic() { return this.topic; }
+    public String getTopic() {
+        return this.topic;
+    }
 
     @JsonProperty
-    public void setTopic(String topic) { this.topic = topic; }
+    public void setTopic(String topic) {
+        this.topic = topic;
+    }
 
     /**
      * Build a new {@link Brave} instance for interfacing with Zipkin
@@ -154,13 +167,14 @@ public class ZipkinFactory {
         final SpanCollectorMetricsHandler metricsHandler = new DropwizardSpanCollectorMetricsHandler(
                 environment.metrics());
         final SpanCollector spanCollector;
+
         switch (collector) {
         case "scribe":
             final ScribeSpanCollectorParams params = new ScribeSpanCollectorParams();
             params.setMetricsHandler(metricsHandler);
             spanCollector = new ScribeSpanCollector(endpoint.getHostText(),
                     endpoint.getPort(), params);
-            LOGGER.info("Connecting to Zipkin scribe span collector at <{}:{}>",
+            LOGGER.info("Sending spans to Scribe collector at <{}:{}>",
                     endpoint.getHostText(), endpoint.getPort());
             break;
         case "http":
@@ -168,14 +182,19 @@ public class ZipkinFactory {
                     String.format("http://%s:%d", endpoint.getHostText(),
                             endpoint.getPort()),
                     metricsHandler);
+            LOGGER.info("Sending spans to HTTP collector at <{}:{}>",
+                    endpoint.getHostText(), endpoint.getPort());
             break;
         case "empty":
             spanCollector = new EmptySpanCollector();
             break;
         case "kafka":
-            KafkaSpanCollector.Config kafkaConfig = KafkaSpanCollector.Config.builder(bootstrapServers)
-                                                        .topic(topic).build();
-            spanCollector = KafkaSpanCollector.create(kafkaConfig, metricsHandler);
+            final KafkaSpanCollector.Config kafkaConfig = KafkaSpanCollector.Config
+                    .builder(bootstrapServers).topic(topic).build();
+            spanCollector = KafkaSpanCollector.create(kafkaConfig,
+                    metricsHandler);
+            LOGGER.info("Sending spans to Kafka topic '{}' at: {}", topic,
+                    bootstrapServers);
             break;
         case "logging":
         default:
