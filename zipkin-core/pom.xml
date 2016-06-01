@@ -26,5 +26,10 @@
             <artifactId>brave-spancollector-http</artifactId>
             <version>${brave.version}</version>
         </dependency>
+        <dependency>
+            <groupId>io.zipkin.brave</groupId>
+            <artifactId>brave-spancollector-kafka</artifactId>
+            <version>${brave.version}</version>
+        </dependency>
     </dependencies>
 </project>
