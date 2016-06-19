@@ -23,7 +23,7 @@ public class HelloWorldResource {
     public Response fetch() throws InterruptedException {
         final Random random = new Random();
         TimeUnit.MILLISECONDS.sleep(random.nextInt(1000));
-        return client.target("http://localhost:8888/result").request().get();
+        return client.target("http://127.0.0.1:8888/result").request().get();
     }
 
     @GET

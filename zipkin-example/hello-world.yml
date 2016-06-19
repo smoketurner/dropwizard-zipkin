@@ -4,7 +4,7 @@ zipkin:
   collector: http
   endpoint: 127.0.0.1:9411
   serviceHost: 127.0.0.1
-  servicePort: 8080
+  servicePort: 8888
 
 zipkinClient:
   serviceName: hello-world
@@ -13,13 +13,12 @@ zipkinClient:
 # HTTP-specific options.
 server:
 
-  applicationConnectors:
-    - type: http
-      port: 8080
-  
-  adminConnectors:
-    - type: http
-      port: 8180
+  type: simple
+  applicationContextPath: /
+  adminContextPath: /admin
+  connector:
+    type: http
+    port: 8888
 
   requestLog:
     appenders:
