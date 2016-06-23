@@ -13,13 +13,13 @@ Dependency Info
 <dependency>
     <groupId>com.smoketurner.dropwizard</groupId>
     <artifactId>zipkin-core</artifactId>
-    <version>0.9.2-9</version>
+    <version>0.9.3-1</version>
 </dependency>
 ```
 
 Usage
 -----
-Add a `ZipkinBundle` to your [Application](http://www.dropwizard.io/0.9.2/dropwizard-core/apidocs/io/dropwizard/Application.html) class.
+Add a `ZipkinBundle` to your [Application](http://www.dropwizard.io/0.9.3/dropwizard-core/apidocs/io/dropwizard/Application.html) class.
 
 ```java
 @Override
@@ -63,13 +63,13 @@ zipkin:
 
 Example Application
 -------------------
-This bundle includes a modified version of the `HelloWorldApplication` from Dropwizard's [Getting Started](http://www.dropwizard.io/0.9.2/docs/getting-started.html) documentation.
+This bundle includes a modified version of the `HelloWorldApplication` from Dropwizard's [Getting Started](http://www.dropwizard.io/0.9.3/docs/getting-started.html) documentation.
 
 ```xml
 <dependency>
     <groupId>com.smoketurner.dropwizard</groupId>
     <artifactId>zipkin-example</artifactId>
-    <version>0.9.2-9</version>
+    <version>0.9.3-1</version>
 </dependency>
 ```
 
@@ -77,7 +77,7 @@ You can execute this application by first starting Zipkin on your local machine 
 
 ```
 mvn clean package
-java -jar zipkin-example/target/zipkin-example-0.9.2-9.jar server zipkin-example/hello-world.yml
+java -jar zipkin-example/target/zipkin-example-0.9.3-1.jar server zipkin-example/hello-world.yml
 ```
 
 This will start the application on port `8080` (admin port `8180`). This application demonstrations the following Zipkin integration points:
