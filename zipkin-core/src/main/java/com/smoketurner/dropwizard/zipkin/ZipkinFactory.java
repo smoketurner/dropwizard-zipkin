@@ -23,7 +23,8 @@ import io.dropwizard.setup.Environment;
 /**
  * A factory for building {@link Brave} instances for Dropwizard applications.
  */
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "collector")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "collector",
+              defaultImpl = LoggingZipkinFactory.class)
 public interface ZipkinFactory extends Discoverable {
 
     /**

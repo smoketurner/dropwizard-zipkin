@@ -18,7 +18,6 @@ package com.smoketurner.dropwizard.zipkin;
 import javax.annotation.Nonnull;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,15 +48,14 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
     private String serviceName;
 
     @NotEmpty
-    private String serviceHost;
+    private String serviceHost = "127.0.0.1";
 
     @PortRange
     private int servicePort = DEFAULT_DW_PORT;
 
     @Min(0)
     @Max(1)
-    @NotNull
-    private Float sampleRate = 1.0f;
+    private float sampleRate = 1.0f;
 
     @JsonProperty
     public String getServiceName() {
@@ -81,17 +79,17 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
     }
 
     @JsonProperty
-    public Integer getServicePort() {
+    public int getServicePort() {
         return servicePort;
     }
 
     @JsonProperty
-    public void setServicePort(Integer servicePort) {
+    public void setServicePort(int servicePort) {
         this.servicePort = servicePort;
     }
 
     @JsonProperty
-    public Float getSampleRate() {
+    public float getSampleRate() {
         return sampleRate;
     }
 
