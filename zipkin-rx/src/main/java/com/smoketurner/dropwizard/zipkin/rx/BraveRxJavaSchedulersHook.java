@@ -16,7 +16,6 @@
 package com.smoketurner.dropwizard.zipkin.rx;
 
 import java.util.Objects;
-import javax.annotation.Nonnull;
 import com.github.kristofa.brave.Brave;
 import com.github.kristofa.brave.ServerSpan;
 import com.github.kristofa.brave.ServerSpanThreadBinder;
@@ -33,7 +32,7 @@ public final class BraveRxJavaSchedulersHook extends RxJavaSchedulersHook {
      * @param brave
      *            Brave instance
      */
-    public BraveRxJavaSchedulersHook(@Nonnull final Brave brave) {
+    public BraveRxJavaSchedulersHook(final Brave brave) {
         this.brave = Objects.requireNonNull(brave);
     }
 
