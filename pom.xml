@@ -27,7 +27,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <file.encoding>UTF-8</file.encoding>
         <dropwizard.version>0.9.3</dropwizard.version>
-        <brave.version>3.9.0</brave.version>
+        <brave.version>3.9.1</brave.version>
     </properties>
 
     <modules>
