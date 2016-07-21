@@ -2,7 +2,7 @@
 zipkin:
 
   collector: http
-  endpoint: 127.0.0.1:9411
+  baseUrl: http://127.0.0.1:9411/
   serviceHost: 127.0.0.1
   servicePort: 8888
 

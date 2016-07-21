@@ -17,6 +17,7 @@ package com.smoketurner.dropwizard.zipkin;
 
 import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -40,6 +41,7 @@ public class HttpZipkinFactory extends AbstractZipkinFactory {
     @Deprecated
     private HostAndPort endpoint = HostAndPort.fromString(DEFAULT_ZIPKIN_HTTP);
 
+    @NotEmpty
     private String baseUrl = "http://127.0.0.1:9411/";
 
     @JsonProperty
