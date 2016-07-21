@@ -37,16 +37,31 @@ public class HttpZipkinFactory extends AbstractZipkinFactory {
     private static final String DEFAULT_ZIPKIN_HTTP = "127.0.0.1:9411";
 
     @NotNull
+    @Deprecated
     private HostAndPort endpoint = HostAndPort.fromString(DEFAULT_ZIPKIN_HTTP);
 
+    private String baseUrl = "http://127.0.0.1:9411/";
+
     @JsonProperty
+    @Deprecated
     public HostAndPort getEndpoint() {
         return endpoint;
     }
 
     @JsonProperty
+    @Deprecated
     public void setEndpoint(HostAndPort endpoint) {
         this.endpoint = endpoint;
+    }
+
+    @JsonProperty
+    public String getBaseUrl() {
+        return baseUrl;
+    }
+
+    @JsonProperty
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
     }
 
     /**
@@ -61,12 +76,10 @@ public class HttpZipkinFactory extends AbstractZipkinFactory {
         final SpanCollectorMetricsHandler metricsHandler = new DropwizardSpanCollectorMetricsHandler(
                 environment.metrics());
 
-        final SpanCollector spanCollector = HttpSpanCollector
-                .create(String.format("http://%s:%d", endpoint.getHostText(),
-                        endpoint.getPort()), metricsHandler);
+        final SpanCollector spanCollector = HttpSpanCollector.create(baseUrl,
+                metricsHandler);
 
-        LOGGER.info("Sending spans to HTTP collector at <{}:{}>",
-                endpoint.getHostText(), endpoint.getPort());
+        LOGGER.info("Sending spans to HTTP collector at: {}", baseUrl);
 
         return buildBrave(environment, spanCollector);
     }

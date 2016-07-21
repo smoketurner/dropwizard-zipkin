@@ -55,8 +55,10 @@ zipkin:
   # Optional properties
   # Span collector to use (scribe, logging, http, kafka or empty)
   collector: http
-  # If using the scribe or http collector, provide the endpoint
+  # If using the scribe collector, provide the endpoint
   endpoint: 127.0.0.1:9411
+  # If using the http collector, provide the baseUrl
+  baseUrl: http://127.0.0.1:9411/
   # If using the kafka collector, provide the Kafka bootstrap servers
   bootstrapServers: 127.0.0.1:9092;10.0.1.1:9092
 ```

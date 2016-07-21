@@ -68,8 +68,7 @@ public class ScribeZipkinFactory extends AbstractZipkinFactory {
         final SpanCollector spanCollector = new ScribeSpanCollector(
                 endpoint.getHostText(), endpoint.getPort(), params);
 
-        LOGGER.info("Sending spans to Scribe collector at <{}:{}>",
-                endpoint.getHostText(), endpoint.getPort());
+        LOGGER.info("Sending spans to Scribe collector at: {}", endpoint);
 
         return buildBrave(environment, spanCollector);
     }
