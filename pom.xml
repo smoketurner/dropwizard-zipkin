@@ -27,13 +27,14 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <file.encoding>UTF-8</file.encoding>
         <dropwizard.version>0.9.3</dropwizard.version>
-        <brave.version>3.9.0</brave.version>
+        <brave.version>3.9.1</brave.version>
     </properties>
 
     <modules>
         <module>zipkin-core</module>
         <module>zipkin-client</module>
         <module>zipkin-example</module>
+        <module>zipkin-rx</module>
     </modules>
 
     <developers>
@@ -320,7 +321,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>findbugs-maven-plugin</artifactId>
-                <version>3.0.3</version>
+                <version>3.0.4</version>
                 <configuration>
                     <effort>Max</effort>
                     <threshold>Default</threshold>
