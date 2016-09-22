@@ -19,7 +19,7 @@ Dependency Info
 
 Usage
 -----
-Add a `ZipkinBundle` to your [Application](http://www.dropwizard.io/0.9.3/dropwizard-core/apidocs/io/dropwizard/Application.html) class.
+Add a `ZipkinBundle` to your [Application](http://www.dropwizard.io/1.0.1/dropwizard-core/apidocs/io/dropwizard/Application.html) class.
 
 ```java
 @Override
