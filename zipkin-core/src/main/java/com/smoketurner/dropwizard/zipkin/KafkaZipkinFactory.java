@@ -22,11 +22,12 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.github.kristofa.brave.Brave;
-import com.github.kristofa.brave.SpanCollector;
-import com.github.kristofa.brave.SpanCollectorMetricsHandler;
-import com.github.kristofa.brave.kafka.KafkaSpanCollector;
-import com.smoketurner.dropwizard.zipkin.metrics.DropwizardSpanCollectorMetricsHandler;
+import com.smoketurner.dropwizard.zipkin.metrics.DropwizardReporterMetrics;
 import io.dropwizard.setup.Environment;
+import zipkin.Span;
+import zipkin.reporter.AsyncReporter;
+import zipkin.reporter.ReporterMetrics;
+import zipkin.reporter.kafka08.KafkaSender;
 
 @JsonTypeName("kafka")
 public class KafkaZipkinFactory extends AbstractZipkinFactory {
@@ -69,17 +70,17 @@ public class KafkaZipkinFactory extends AbstractZipkinFactory {
      */
     @Override
     public Brave build(@Nonnull final Environment environment) {
-        final SpanCollectorMetricsHandler metricsHandler = new DropwizardSpanCollectorMetricsHandler(
+        final ReporterMetrics metricsHandler = new DropwizardReporterMetrics(
                 environment.metrics());
 
-        final KafkaSpanCollector.Config kafkaConfig = KafkaSpanCollector.Config
-                .builder(bootstrapServers).topic(topic).build();
-        final SpanCollector spanCollector = KafkaSpanCollector
-                .create(kafkaConfig, metricsHandler);
+        final KafkaSender sender = KafkaSender.builder()
+                .bootstrapServers(bootstrapServers).topic(topic).build();
+        final AsyncReporter<Span> reporter = AsyncReporter.builder(sender)
+                .metrics(metricsHandler).build();
 
         LOGGER.info("Sending spans to Kafka topic '{}' at: {}", topic,
                 bootstrapServers);
 
-        return buildBrave(environment, spanCollector);
+        return buildBrave(environment, reporter);
     }
 }

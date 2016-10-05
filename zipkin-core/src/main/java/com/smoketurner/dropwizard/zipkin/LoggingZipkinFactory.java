@@ -20,8 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.github.kristofa.brave.Brave;
-import com.github.kristofa.brave.LoggingSpanCollector;
-import com.github.kristofa.brave.SpanCollector;
+import com.github.kristofa.brave.LoggingReporter;
 import io.dropwizard.setup.Environment;
 
 @JsonTypeName("logging")
@@ -39,10 +38,10 @@ public class LoggingZipkinFactory extends AbstractZipkinFactory {
      */
     @Override
     public Brave build(@Nonnull final Environment environment) {
-        final SpanCollector spanCollector = new LoggingSpanCollector();
+        final LoggingReporter reporter = new LoggingReporter();
 
         LOGGER.info("Sending spans to log");
 
-        return buildBrave(environment, spanCollector);
+        return buildBrave(environment, reporter);
     }
 }

@@ -16,45 +16,27 @@
 package com.smoketurner.dropwizard.zipkin;
 
 import javax.annotation.Nonnull;
-import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.github.kristofa.brave.Brave;
-import com.github.kristofa.brave.SpanCollector;
-import com.github.kristofa.brave.SpanCollectorMetricsHandler;
-import com.github.kristofa.brave.http.HttpSpanCollector;
-import com.google.common.net.HostAndPort;
-import com.smoketurner.dropwizard.zipkin.metrics.DropwizardSpanCollectorMetricsHandler;
+import com.smoketurner.dropwizard.zipkin.metrics.DropwizardReporterMetrics;
 import io.dropwizard.setup.Environment;
+import zipkin.Span;
+import zipkin.reporter.AsyncReporter;
+import zipkin.reporter.ReporterMetrics;
+import zipkin.reporter.urlconnection.URLConnectionSender;
 
 @JsonTypeName("http")
 public class HttpZipkinFactory extends AbstractZipkinFactory {
 
     private static final Logger LOGGER = LoggerFactory
             .getLogger(HttpZipkinFactory.class);
-    private static final String DEFAULT_ZIPKIN_HTTP = "127.0.0.1:9411";
-
-    @NotNull
-    @Deprecated
-    private HostAndPort endpoint = HostAndPort.fromString(DEFAULT_ZIPKIN_HTTP);
 
     @NotEmpty
     private String baseUrl = "http://127.0.0.1:9411/";
-
-    @JsonProperty
-    @Deprecated
-    public HostAndPort getEndpoint() {
-        return endpoint;
-    }
-
-    @JsonProperty
-    @Deprecated
-    public void setEndpoint(HostAndPort endpoint) {
-        this.endpoint = endpoint;
-    }
 
     @JsonProperty
     public String getBaseUrl() {
@@ -75,14 +57,16 @@ public class HttpZipkinFactory extends AbstractZipkinFactory {
      */
     @Override
     public Brave build(@Nonnull final Environment environment) {
-        final SpanCollectorMetricsHandler metricsHandler = new DropwizardSpanCollectorMetricsHandler(
+        final ReporterMetrics metricsHandler = new DropwizardReporterMetrics(
                 environment.metrics());
 
-        final SpanCollector spanCollector = HttpSpanCollector.create(baseUrl,
-                metricsHandler);
+        final URLConnectionSender sender = URLConnectionSender
+                .create(baseUrl + "api/v1/spans");
+        final AsyncReporter<Span> reporter = AsyncReporter.builder(sender)
+                .metrics(metricsHandler).build();
 
         LOGGER.info("Sending spans to HTTP collector at: {}", baseUrl);
 
-        return buildBrave(environment, spanCollector);
+        return buildBrave(environment, reporter);
     }
 }
