@@ -19,25 +19,31 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import io.dropwizard.lifecycle.Managed;
 import zipkin.Component.CheckResult;
+import zipkin.reporter.AsyncReporter;
 import zipkin.reporter.Sender;
 
-public class SenderManager implements Managed {
+public class ReporterManager implements Managed {
 
+    private final AsyncReporter<?> reporter;
     private final Sender sender;
 
     /**
      * Constructor
      *
+     * @param reporter
+     *            Reporter to manage
      * @param sender
      *            Sender to manage
      */
-    public SenderManager(@Nonnull final Sender sender) {
+    public ReporterManager(@Nonnull final AsyncReporter<?> reporter,
+            @Nonnull final Sender sender) {
+        this.reporter = Objects.requireNonNull(reporter);
         this.sender = Objects.requireNonNull(sender);
     }
 
     @Override
     public void start() throws Exception {
-        final CheckResult result = sender.check();
+        final CheckResult result = reporter.check();
         if (!result.ok) {
             throw new Exception("Unable to connect to Zipkin destination",
                     result.exception);
@@ -46,6 +52,9 @@ public class SenderManager implements Managed {
 
     @Override
     public void stop() throws Exception {
+        // the reporter needs to be closed first so that it can report on
+        // any dropped spans before closing the sender connection.
+        reporter.close();
         sender.close();
     }
 }

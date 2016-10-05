@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.github.kristofa.brave.Brave;
 import com.google.common.net.HostAndPort;
-import com.smoketurner.dropwizard.zipkin.managed.SenderManager;
+import com.smoketurner.dropwizard.zipkin.managed.ReporterManager;
 import com.smoketurner.dropwizard.zipkin.metrics.DropwizardReporterMetrics;
 import io.dropwizard.setup.Environment;
 import zipkin.Span;
@@ -67,10 +67,10 @@ public class ScribeZipkinFactory extends AbstractZipkinFactory {
         final LibthriftSender sender = LibthriftSender
                 .create(endpoint.getHostText());
 
-        environment.lifecycle().manage(new SenderManager(sender));
-
         final AsyncReporter<Span> reporter = AsyncReporter.builder(sender)
                 .metrics(metricsHandler).build();
+
+        environment.lifecycle().manage(new ReporterManager(reporter, sender));
 
         LOGGER.info("Sending spans to Scribe collector at: {}", endpoint);
 
