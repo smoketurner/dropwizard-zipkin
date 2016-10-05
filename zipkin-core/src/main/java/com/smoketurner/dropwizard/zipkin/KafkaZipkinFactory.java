@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.github.kristofa.brave.Brave;
+import com.smoketurner.dropwizard.zipkin.managed.SenderManager;
 import com.smoketurner.dropwizard.zipkin.metrics.DropwizardReporterMetrics;
 import io.dropwizard.setup.Environment;
 import zipkin.Span;
@@ -75,6 +76,9 @@ public class KafkaZipkinFactory extends AbstractZipkinFactory {
 
         final KafkaSender sender = KafkaSender.builder()
                 .bootstrapServers(bootstrapServers).topic(topic).build();
+
+        environment.lifecycle().manage(new SenderManager(sender));
+
         final AsyncReporter<Span> reporter = AsyncReporter.builder(sender)
                 .metrics(metricsHandler).build();
 

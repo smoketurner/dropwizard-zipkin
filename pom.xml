@@ -28,6 +28,8 @@
         <file.encoding>UTF-8</file.encoding>
         <dropwizard.version>1.0.2</dropwizard.version>
         <brave.version>3.14.0</brave.version>
+        <zipkin.version>1.13.0</zipkin.version>
+        <zipkin.reporter.version>0.6.0</zipkin.reporter.version>
     </properties>
 
     <modules>
@@ -102,6 +104,11 @@
                 <version>${dropwizard.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.zipkin.java</groupId>
+                <artifactId>zipkin</artifactId>
+                <version>${zipkin.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

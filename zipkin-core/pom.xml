@@ -11,10 +11,6 @@
     <artifactId>zipkin-core</artifactId>
     <name>Dropwizard Zipkin Bundle</name>
 
-    <properties>
-        <zipkin.reporter.version>0.6.0</zipkin.reporter.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>io.dropwizard</groupId>
