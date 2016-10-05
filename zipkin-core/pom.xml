@@ -22,24 +22,19 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>io.zipkin.brave</groupId>
-            <artifactId>brave-spancollector-local</artifactId>
-            <version>${brave.version}</version>
+            <groupId>io.zipkin.reporter</groupId>
+            <artifactId>zipkin-sender-libthrift</artifactId>
+            <version>${zipkin.reporter.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.zipkin.brave</groupId>
-            <artifactId>brave-spancollector-scribe</artifactId>
-            <version>${brave.version}</version>
+            <groupId>io.zipkin.reporter</groupId>
+            <artifactId>zipkin-sender-urlconnection</artifactId>
+            <version>${zipkin.reporter.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.zipkin.brave</groupId>
-            <artifactId>brave-spancollector-http</artifactId>
-            <version>${brave.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.zipkin.brave</groupId>
-            <artifactId>brave-spancollector-kafka</artifactId>
-            <version>${brave.version}</version>
+            <groupId>io.zipkin.reporter</groupId>
+            <artifactId>zipkin-sender-kafka08</artifactId>
+            <version>${zipkin.reporter.version}</version>
         </dependency>
     </dependencies>
 </project>

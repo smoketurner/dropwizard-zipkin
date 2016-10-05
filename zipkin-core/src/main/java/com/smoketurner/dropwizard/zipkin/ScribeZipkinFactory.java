@@ -22,13 +22,14 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.github.kristofa.brave.Brave;
-import com.github.kristofa.brave.SpanCollector;
-import com.github.kristofa.brave.SpanCollectorMetricsHandler;
-import com.github.kristofa.brave.scribe.ScribeSpanCollector;
-import com.github.kristofa.brave.scribe.ScribeSpanCollectorParams;
 import com.google.common.net.HostAndPort;
-import com.smoketurner.dropwizard.zipkin.metrics.DropwizardSpanCollectorMetricsHandler;
+import com.smoketurner.dropwizard.zipkin.managed.ReporterManager;
+import com.smoketurner.dropwizard.zipkin.metrics.DropwizardReporterMetrics;
 import io.dropwizard.setup.Environment;
+import zipkin.Span;
+import zipkin.reporter.AsyncReporter;
+import zipkin.reporter.ReporterMetrics;
+import zipkin.reporter.libthrift.LibthriftSender;
 
 @JsonTypeName("scribe")
 public class ScribeZipkinFactory extends AbstractZipkinFactory {
@@ -60,16 +61,19 @@ public class ScribeZipkinFactory extends AbstractZipkinFactory {
      */
     @Override
     public Brave build(@Nonnull final Environment environment) {
-        final SpanCollectorMetricsHandler metricsHandler = new DropwizardSpanCollectorMetricsHandler(
+        final ReporterMetrics metricsHandler = new DropwizardReporterMetrics(
                 environment.metrics());
-        final ScribeSpanCollectorParams params = new ScribeSpanCollectorParams();
-        params.setMetricsHandler(metricsHandler);
 
-        final SpanCollector spanCollector = new ScribeSpanCollector(
-                endpoint.getHostText(), endpoint.getPort(), params);
+        final LibthriftSender sender = LibthriftSender
+                .create(endpoint.getHostText());
+
+        final AsyncReporter<Span> reporter = AsyncReporter.builder(sender)
+                .metrics(metricsHandler).build();
+
+        environment.lifecycle().manage(new ReporterManager(reporter, sender));
 
         LOGGER.info("Sending spans to Scribe collector at: {}", endpoint);
 
-        return buildBrave(environment, spanCollector);
+        return buildBrave(environment, reporter);
     }
 }

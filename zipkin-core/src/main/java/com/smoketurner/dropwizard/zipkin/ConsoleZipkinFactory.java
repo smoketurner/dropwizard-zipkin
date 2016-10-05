@@ -23,11 +23,11 @@ import com.github.kristofa.brave.Brave;
 import io.dropwizard.setup.Environment;
 import zipkin.reporter.Reporter;
 
-@JsonTypeName("empty")
-public class EmptyZipkinFactory extends AbstractZipkinFactory {
+@JsonTypeName("console")
+public class ConsoleZipkinFactory extends AbstractZipkinFactory {
 
     private static final Logger LOGGER = LoggerFactory
-            .getLogger(EmptyZipkinFactory.class);
+            .getLogger(ConsoleZipkinFactory.class);
 
     /**
      * Build a new {@link Brave} instance for interfacing with Zipkin
@@ -38,7 +38,7 @@ public class EmptyZipkinFactory extends AbstractZipkinFactory {
      */
     @Override
     public Brave build(@Nonnull final Environment environment) {
-        LOGGER.info("Dropping all collected spans");
-        return buildBrave(environment, Reporter.NOOP);
+        LOGGER.info("Sending spans to console");
+        return buildBrave(environment, Reporter.CONSOLE);
     }
 }

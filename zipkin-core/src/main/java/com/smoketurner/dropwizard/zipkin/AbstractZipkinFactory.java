@@ -24,15 +24,17 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.kristofa.brave.Brave;
 import com.github.kristofa.brave.Sampler;
-import com.github.kristofa.brave.SpanCollector;
 import com.github.kristofa.brave.http.DefaultSpanNameProvider;
 import com.github.kristofa.brave.jaxrs2.BraveContainerRequestFilter;
 import com.github.kristofa.brave.jaxrs2.BraveContainerResponseFilter;
 import com.google.common.net.InetAddresses;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.validation.PortRange;
+import zipkin.Span;
+import zipkin.reporter.Reporter;
 
 /**
+ * @see ConsoleZipkinFactory
  * @see EmptyZipkinFactory
  * @see HttpZipkinFactory
  * @see KafkaZipkinFactory
@@ -107,22 +109,19 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
      *
      * @param environment
      *            Environment
-     * @param spanCollector
-     *            Span collector
+     * @param reporter
+     *            reporter
      * @return Brave instance
      */
     protected Brave buildBrave(@Nonnull final Environment environment,
-            @Nonnull final SpanCollector spanCollector) {
+            @Nonnull final Reporter<Span> reporter) {
 
         LOGGER.info("Registering Zipkin service ({}) at <{}:{}>", serviceName,
                 serviceHost, servicePort);
 
-        final Brave.Builder builder = new Brave.Builder(toInt(serviceHost),
-                servicePort, serviceName);
-        builder.spanCollector(spanCollector);
-        builder.traceSampler(Sampler.create(sampleRate));
-
-        final Brave brave = builder.build();
+        final Brave brave = new Brave.Builder(toInt(serviceHost), servicePort,
+                serviceName).reporter(reporter)
+                        .traceSampler(Sampler.create(sampleRate)).build();
 
         // Register the request filter for incoming server requests
         environment.jersey()
