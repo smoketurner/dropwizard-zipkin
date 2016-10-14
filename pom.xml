@@ -27,7 +27,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <file.encoding>UTF-8</file.encoding>
         <dropwizard.version>1.0.2</dropwizard.version>
-        <brave.version>3.14.0</brave.version>
+        <brave.version>3.14.1</brave.version>
         <zipkin.reporter.version>0.6.1</zipkin.reporter.version>
     </properties>
 
@@ -103,11 +103,6 @@
                 <version>${dropwizard.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>io.zipkin.reporter</groupId>
-                <artifactId>zipkin-reporter</artifactId>
-                <version>${zipkin.reporter.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
