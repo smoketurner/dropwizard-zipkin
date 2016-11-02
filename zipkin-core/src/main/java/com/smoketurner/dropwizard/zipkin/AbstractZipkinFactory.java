@@ -16,11 +16,11 @@
 package com.smoketurner.dropwizard.zipkin;
 
 import javax.annotation.Nonnull;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
+
 import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.kristofa.brave.Brave;
 import com.github.kristofa.brave.Sampler;
@@ -28,6 +28,7 @@ import com.github.kristofa.brave.http.DefaultSpanNameProvider;
 import com.github.kristofa.brave.jaxrs2.BraveContainerRequestFilter;
 import com.github.kristofa.brave.jaxrs2.BraveContainerResponseFilter;
 import com.google.common.net.InetAddresses;
+
 import io.dropwizard.setup.Environment;
 import io.dropwizard.validation.PortRange;
 import zipkin.Span;
@@ -55,9 +56,7 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
     @PortRange
     private int servicePort = DEFAULT_DW_PORT;
 
-    @Min(0)
-    @Max(1)
-    private float sampleRate = 1.0f;
+    private Sampler sampler;
 
     private boolean traceId128Bit = false;
 
@@ -93,13 +92,13 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
     }
 
     @JsonProperty
-    public float getSampleRate() {
-        return sampleRate;
+    public Sampler getSampler() {
+        return sampler;
     }
 
     @JsonProperty
-    public void setSampleRate(float sampleRate) {
-        this.sampleRate = sampleRate;
+    public void setSampler(Sampler sampler) {
+        this.sampler = sampler;
     }
 
     @JsonProperty
@@ -133,7 +132,7 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
 
         final Brave brave = new Brave.Builder(toInt(serviceHost), servicePort,
                 serviceName).reporter(reporter)
-                        .traceSampler(Sampler.create(sampleRate))
+                        .traceSampler(sampler)
                         .traceId128Bit(traceId128Bit).build();
 
         // Register the request filter for incoming server requests
