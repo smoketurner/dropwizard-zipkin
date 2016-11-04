@@ -148,7 +148,7 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
 
         final Brave brave = new Brave.Builder(toInt(serviceHost), servicePort,
                 serviceName).reporter(reporter)
-                        .traceSampler(sampler)
+                        .traceSampler(getSampler())
                         .traceId128Bit(traceId128Bit).build();
 
         // Register the request filter for incoming server requests
