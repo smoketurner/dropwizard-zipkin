@@ -16,11 +16,11 @@
 package com.smoketurner.dropwizard.zipkin;
 
 import javax.annotation.Nonnull;
-
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.kristofa.brave.Brave;
 import com.github.kristofa.brave.Sampler;
@@ -28,7 +28,6 @@ import com.github.kristofa.brave.http.DefaultSpanNameProvider;
 import com.github.kristofa.brave.jaxrs2.BraveContainerRequestFilter;
 import com.github.kristofa.brave.jaxrs2.BraveContainerResponseFilter;
 import com.google.common.net.InetAddresses;
-
 import io.dropwizard.setup.Environment;
 import io.dropwizard.validation.PortRange;
 import zipkin.Span;
@@ -56,7 +55,11 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
     @PortRange
     private int servicePort = DEFAULT_DW_PORT;
 
-    private Sampler sampler;
+    @Min(0)
+    @Max(1)
+    private float sampleRate = 1.0f;
+
+    private Sampler sampler = null;
 
     private boolean traceId128Bit = false;
 
@@ -92,7 +95,20 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
     }
 
     @JsonProperty
+    public float getSampleRate() {
+        return sampleRate;
+    }
+
+    @JsonProperty
+    public void setSampleRate(float sampleRate) {
+        this.sampleRate = sampleRate;
+    }
+
+    @JsonProperty
     public Sampler getSampler() {
+        if (sampler == null) {
+            sampler = Sampler.create(sampleRate);
+        }
         return sampler;
     }
 
