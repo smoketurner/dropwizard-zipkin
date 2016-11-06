@@ -59,6 +59,8 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
     @Max(1)
     private float sampleRate = 1.0f;
 
+    private Sampler sampler = null;
+
     private boolean traceId128Bit = false;
 
     @JsonProperty
@@ -103,6 +105,19 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
     }
 
     @JsonProperty
+    public Sampler getSampler() {
+        if (sampler == null) {
+            sampler = Sampler.create(sampleRate);
+        }
+        return sampler;
+    }
+
+    @JsonProperty
+    public void setSampler(Sampler sampler) {
+        this.sampler = sampler;
+    }
+
+    @JsonProperty
     public boolean getTraceId128Bit() {
         return traceId128Bit;
     }
@@ -133,7 +148,7 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
 
         final Brave brave = new Brave.Builder(toInt(serviceHost), servicePort,
                 serviceName).reporter(reporter)
-                        .traceSampler(Sampler.create(sampleRate))
+                        .traceSampler(getSampler())
                         .traceId128Bit(traceId128Bit).build();
 
         // Register the request filter for incoming server requests
