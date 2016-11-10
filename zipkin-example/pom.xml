@@ -22,11 +22,6 @@
             <artifactId>zipkin-client</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.smoketurner.dropwizard</groupId>
-            <artifactId>zipkin-rx</artifactId>
-            <version>${project.version}</version>
-        </dependency>
     </dependencies>
 
     <build>

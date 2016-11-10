@@ -22,6 +22,10 @@ import com.github.kristofa.brave.ServerSpanThreadBinder;
 import rx.functions.Action0;
 import rx.plugins.RxJavaSchedulersHook;
 
+/**
+ * @deprecated No longer able to support
+ */
+@Deprecated
 public final class BraveRxJavaSchedulersHook extends RxJavaSchedulersHook {
 
     private final Brave brave;
