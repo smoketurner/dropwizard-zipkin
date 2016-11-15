@@ -7,7 +7,7 @@
 
     <groupId>com.smoketurner.dropwizard</groupId>
     <artifactId>dropwizard-zipkin</artifactId>
-    <version>1.0.3-2-SNAPSHOT</version>
+    <version>1.0.3-3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>dropwizard-zipkin</name>
@@ -27,8 +27,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <file.encoding>UTF-8</file.encoding>
         <dropwizard.version>1.0.3</dropwizard.version>
-        <brave.version>3.15.0</brave.version>
-        <zipkin.reporter.version>0.6.4</zipkin.reporter.version>
+        <brave.version>3.15.1</brave.version>
+        <zipkin.reporter.version>0.6.6</zipkin.reporter.version>
     </properties>
 
     <modules>
