@@ -21,9 +21,12 @@ import com.github.kristofa.brave.Brave;
 import com.smoketurner.dropwizard.zipkin.ZipkinBundle;
 import com.smoketurner.dropwizard.zipkin.ZipkinFactory;
 import com.smoketurner.dropwizard.zipkin.client.ZipkinClientBuilder;
+import com.smoketurner.dropwizard.zipkin.rx.BraveRxJavaSchedulersHook;
+
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import rx.plugins.RxJavaHooks;
 
 public class HelloWorldApplication
         extends Application<HelloWorldConfiguration> {
@@ -57,6 +60,9 @@ public class HelloWorldApplication
 
         final Client client = new ZipkinClientBuilder(environment, brave)
                 .build(configuration.getZipkinClient());
+
+        BraveRxJavaSchedulersHook hook = new BraveRxJavaSchedulersHook(brave);
+        RxJavaHooks.setOnScheduleAction(hook::onSchedule);
 
         // Register resources
         final HelloWorldResource resource = new HelloWorldResource(client);
