@@ -15,6 +15,7 @@
  */
 package com.smoketurner.dropwizard.zipkin;
 
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -24,9 +25,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.kristofa.brave.Brave;
 import com.github.kristofa.brave.Sampler;
-import com.github.kristofa.brave.http.DefaultSpanNameProvider;
-import com.github.kristofa.brave.jaxrs2.BraveContainerRequestFilter;
-import com.github.kristofa.brave.jaxrs2.BraveContainerResponseFilter;
+import com.github.kristofa.brave.jaxrs2.BraveTracingFeature;
 import com.google.common.net.InetAddresses;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.validation.PortRange;
@@ -47,6 +46,8 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
             .getLogger(AbstractZipkinFactory.class);
     private static final int DEFAULT_DW_PORT = 8080;
 
+    private boolean enabled = true;
+
     private String serviceName;
 
     @NotEmpty
@@ -62,6 +63,16 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
     private Sampler sampler = null;
 
     private boolean traceId128Bit = false;
+
+    @JsonProperty
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    @JsonProperty
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 
     @JsonProperty
     public String getServiceName() {
@@ -140,7 +151,7 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
      *            reporter
      * @return Brave instance
      */
-    protected Brave buildBrave(@Nonnull final Environment environment,
+    protected Optional<Brave> buildBrave(@Nonnull final Environment environment,
             @Nonnull final Reporter<Span> reporter) {
 
         LOGGER.info("Registering Zipkin service ({}) at <{}:{}>", serviceName,
@@ -150,16 +161,9 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
                 serviceName).reporter(reporter).traceSampler(getSampler())
                         .traceId128Bit(traceId128Bit).build();
 
-        // Register the request filter for incoming server requests
-        environment.jersey()
-                .register(new BraveContainerRequestFilter(
-                        brave.serverRequestInterceptor(),
-                        new DefaultSpanNameProvider()));
+        // Register the tracing feature for client and server requests
+        environment.jersey().register(BraveTracingFeature.create(brave));
 
-        // Register the response filter for outgoing server requests
-        environment.jersey().register(new BraveContainerResponseFilter(
-                brave.serverResponseInterceptor()));
-
-        return brave;
+        return Optional.of(brave);
     }
 }

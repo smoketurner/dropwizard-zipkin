@@ -1,6 +1,7 @@
 # Zipkin-specific options.
 zipkin:
 
+  enabled: false
   collector: http
   baseUrl: http://127.0.0.1:9411/
   serviceHost: 127.0.0.1

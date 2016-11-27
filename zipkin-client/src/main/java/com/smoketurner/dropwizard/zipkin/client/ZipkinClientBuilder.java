@@ -19,7 +19,6 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.ws.rs.client.Client;
 import com.github.kristofa.brave.Brave;
-import com.github.kristofa.brave.http.DefaultSpanNameProvider;
 import com.github.kristofa.brave.jaxrs2.BraveClientRequestFilter;
 import com.github.kristofa.brave.jaxrs2.BraveClientResponseFilter;
 import io.dropwizard.client.JerseyClientBuilder;
@@ -66,13 +65,10 @@ public class ZipkinClientBuilder {
      */
     public Client build(@Nonnull final Client client) {
         // Register the request filter for outgoing client requests
-        client.register(
-                new BraveClientRequestFilter(new DefaultSpanNameProvider(),
-                        brave.clientRequestInterceptor()));
+        client.register(BraveClientRequestFilter.create(brave));
 
         // Register the response filter for incoming client requests
-        client.register(new BraveClientResponseFilter(
-                brave.clientResponseInterceptor()));
+        client.register(BraveClientResponseFilter.create(brave));
 
         return client;
     }

@@ -15,6 +15,7 @@
  */
 package com.smoketurner.dropwizard.zipkin;
 
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
@@ -57,7 +58,12 @@ public class HttpZipkinFactory extends AbstractZipkinFactory {
      * @return Brave instance
      */
     @Override
-    public Brave build(@Nonnull final Environment environment) {
+    public Optional<Brave> build(@Nonnull final Environment environment) {
+        if (!isEnabled()) {
+            LOGGER.warn("Zipkin tracing is disabled");
+            return Optional.empty();
+        }
+
         final ReporterMetrics metricsHandler = new DropwizardReporterMetrics(
                 environment.metrics());
 

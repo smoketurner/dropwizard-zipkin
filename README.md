@@ -35,7 +35,7 @@ public void initialize(Bootstrap<MyConfiguration> bootstrap) {
 
 @Override
 public void run(MyConfiguration configuration, Environment environment) throws Exception {
-    Brave brave = configuration.getZipkinFactory().build(environment);
+    Optional<Brave> brave = configuration.getZipkinFactory().build(environment);
 }
 ```
 
@@ -47,6 +47,8 @@ For configuring the Zipkin connection, there is a `ZipkinFactory`:
 zipkin:
 
   # Required properties
+  # Whether tracing is enabled or not (defaults to true)
+  enabled: true
   # Listening IP address of the service
   serviceHost: 192.168.1.100
   # Listening port of the service
