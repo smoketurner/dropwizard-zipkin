@@ -22,6 +22,7 @@ import javax.validation.constraints.Min;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.kristofa.brave.Brave;
 import com.github.kristofa.brave.Sampler;
@@ -115,15 +116,15 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
         this.sampleRate = sampleRate;
     }
 
-    @JsonProperty
+    @JsonIgnore
     public Sampler getSampler() {
         if (sampler == null) {
-            sampler = Sampler.create(sampleRate);
+            return Sampler.create(sampleRate);
         }
         return sampler;
     }
 
-    @JsonProperty
+    @JsonIgnore
     public void setSampler(Sampler sampler) {
         this.sampler = sampler;
     }
