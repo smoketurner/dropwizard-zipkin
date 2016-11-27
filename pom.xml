@@ -7,7 +7,7 @@
 
     <groupId>com.smoketurner.dropwizard</groupId>
     <artifactId>dropwizard-zipkin</artifactId>
-    <version>1.0.5-3-SNAPSHOT</version>
+    <version>1.0.5-2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>dropwizard-zipkin</name>
