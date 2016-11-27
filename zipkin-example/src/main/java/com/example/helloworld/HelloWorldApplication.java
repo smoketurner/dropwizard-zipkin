@@ -15,15 +15,17 @@
  */
 package com.example.helloworld;
 
+import java.util.Optional;
 import javax.ws.rs.client.Client;
 import com.example.helloworld.resources.HelloWorldResource;
 import com.github.kristofa.brave.Brave;
 import com.smoketurner.dropwizard.zipkin.ZipkinBundle;
 import com.smoketurner.dropwizard.zipkin.ZipkinFactory;
 import com.smoketurner.dropwizard.zipkin.client.ZipkinClientBuilder;
+import com.smoketurner.dropwizard.zipkin.client.ZipkinClientConfiguration;
 import com.smoketurner.dropwizard.zipkin.rx.BraveRxJavaSchedulersHook;
-
 import io.dropwizard.Application;
+import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import rx.plugins.RxJavaHooks;
@@ -56,13 +58,23 @@ public class HelloWorldApplication
     public void run(HelloWorldConfiguration configuration,
             Environment environment) throws Exception {
 
-        final Brave brave = configuration.getZipkinFactory().build(environment);
+        final Optional<Brave> brave = configuration.getZipkinFactory()
+                .build(environment);
 
-        final Client client = new ZipkinClientBuilder(environment, brave)
-                .build(configuration.getZipkinClient());
+        final Client client;
+        if (brave.isPresent()) {
+            client = new ZipkinClientBuilder(environment, brave.get())
+                    .build(configuration.getZipkinClient());
 
-        BraveRxJavaSchedulersHook hook = new BraveRxJavaSchedulersHook(brave);
-        RxJavaHooks.setOnScheduleAction(hook::onSchedule);
+            BraveRxJavaSchedulersHook hook = new BraveRxJavaSchedulersHook(
+                    brave.get());
+            RxJavaHooks.setOnScheduleAction(hook::onSchedule);
+        } else {
+            final ZipkinClientConfiguration clientConfig = configuration
+                    .getZipkinClient();
+            client = new JerseyClientBuilder(environment).using(clientConfig)
+                    .build(clientConfig.getServiceName());
+        }
 
         // Register resources
         final HelloWorldResource resource = new HelloWorldResource(client);
