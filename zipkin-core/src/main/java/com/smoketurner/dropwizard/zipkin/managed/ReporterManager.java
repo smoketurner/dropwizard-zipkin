@@ -16,13 +16,20 @@
 package com.smoketurner.dropwizard.zipkin.managed;
 
 import java.util.Objects;
+
 import javax.annotation.Nonnull;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.dropwizard.lifecycle.Managed;
 import zipkin.Component.CheckResult;
 import zipkin.reporter.AsyncReporter;
 import zipkin.reporter.Sender;
 
 public class ReporterManager implements Managed {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReporterManager.class);
 
     private final AsyncReporter<?> reporter;
     private final Sender sender;
@@ -45,8 +52,9 @@ public class ReporterManager implements Managed {
     public void start() throws Exception {
         final CheckResult result = reporter.check();
         if (!result.ok) {
-            throw new Exception("Unable to connect to Zipkin destination",
-                    result.exception);
+            LOGGER.error("Unable to connect to Zipkin destination", result.exception);
+        } else {
+            LOGGER.info("Successfully connected to Zipkin");
         }
     }
 
