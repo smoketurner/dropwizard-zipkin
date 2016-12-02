@@ -13,7 +13,7 @@ Dependency Info
 <dependency>
     <groupId>com.smoketurner.dropwizard</groupId>
     <artifactId>zipkin-core</artifactId>
-    <version>1.0.5-2</version>
+    <version>1.0.5-3</version>
 </dependency>
 ```
 
@@ -73,7 +73,7 @@ This bundle includes a modified version of the `HelloWorldApplication` from Drop
 <dependency>
     <groupId>com.smoketurner.dropwizard</groupId>
     <artifactId>zipkin-example</artifactId>
-    <version>1.0.5-2</version>
+    <version>1.0.5-3</version>
 </dependency>
 ```
 
@@ -81,7 +81,7 @@ You can execute this application by first starting Zipkin on your local machine 
 
 ```
 mvn clean package
-java -jar zipkin-example/target/zipkin-example-1.0.5-2.jar server zipkin-example/hello-world.yml
+java -jar zipkin-example/target/zipkin-example-1.0.5-4-SNAPSHOT.jar server zipkin-example/hello-world.yml
 ```
 
 This will start the application on port `8080` (admin port `8180`). This application demonstrations the following Zipkin integration points:
