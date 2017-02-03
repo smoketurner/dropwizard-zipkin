@@ -26,8 +26,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <file.encoding>UTF-8</file.encoding>
-        <dropwizard.version>1.0.5</dropwizard.version>
-        <brave.version>4.0.4</brave.version>
+        <dropwizard.version>1.0.6</dropwizard.version>
+        <brave.version>4.0.5</brave.version>
         <zipkin.reporter.version>0.6.12</zipkin.reporter.version>
     </properties>
 
