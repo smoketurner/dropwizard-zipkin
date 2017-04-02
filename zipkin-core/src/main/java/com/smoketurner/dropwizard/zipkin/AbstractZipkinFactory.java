@@ -75,6 +75,7 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
         this.enabled = enabled;
     }
 
+    @Override
     @JsonProperty
     public String getServiceName() {
         return serviceName;

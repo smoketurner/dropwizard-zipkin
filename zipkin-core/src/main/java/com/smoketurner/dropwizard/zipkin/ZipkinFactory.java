@@ -43,4 +43,11 @@ public interface ZipkinFactory extends Discoverable {
      *            Service name
      */
     void setServiceName(String name);
+
+    /**
+     * Return the name of the service.
+     *
+     * @return name of the service
+     */
+    String getServiceName();
 }

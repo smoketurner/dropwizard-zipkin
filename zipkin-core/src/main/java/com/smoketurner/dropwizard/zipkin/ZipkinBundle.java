@@ -17,6 +17,7 @@ package com.smoketurner.dropwizard.zipkin;
 
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import com.google.common.base.Strings;
 import io.dropwizard.Configuration;
 import io.dropwizard.ConfiguredBundle;
 import io.dropwizard.setup.Bootstrap;
@@ -46,6 +47,8 @@ public abstract class ZipkinBundle<C extends Configuration>
     public void run(final C configuration, final Environment environment)
             throws Exception {
         final ZipkinFactory braveConfig = getZipkinFactory(configuration);
-        braveConfig.setServiceName(serviceName);
+        if (Strings.isNullOrEmpty(braveConfig.getServiceName())) {
+            braveConfig.setServiceName(serviceName);
+        }
     }
 }
