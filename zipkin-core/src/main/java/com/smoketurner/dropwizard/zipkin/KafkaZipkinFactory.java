@@ -29,7 +29,7 @@ import io.dropwizard.setup.Environment;
 import zipkin.Span;
 import zipkin.reporter.AsyncReporter;
 import zipkin.reporter.ReporterMetrics;
-import zipkin.reporter.kafka08.KafkaSender;
+import zipkin.reporter.kafka10.KafkaSender;
 
 @JsonTypeName("kafka")
 public class KafkaZipkinFactory extends AbstractZipkinFactory {

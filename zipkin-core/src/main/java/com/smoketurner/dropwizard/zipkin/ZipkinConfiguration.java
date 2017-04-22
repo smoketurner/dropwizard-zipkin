@@ -17,6 +17,7 @@ package com.smoketurner.dropwizard.zipkin;
 
 import io.dropwizard.Configuration;
 
+@FunctionalInterface
 public interface ZipkinConfiguration<C extends Configuration> {
     ZipkinFactory getZipkinFactory(C configuration);
 }
