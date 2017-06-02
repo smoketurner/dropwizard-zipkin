@@ -29,6 +29,7 @@ import brave.Tracing;
 import brave.context.slf4j.MDCCurrentTraceContext;
 import brave.jaxrs2.TracingFeature;
 import brave.sampler.Sampler;
+import io.dropwizard.lifecycle.Managed;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.validation.PortRange;
 import zipkin.Endpoint;
@@ -173,6 +174,17 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
 
         // Register the tracing feature for client and server requests
         environment.jersey().register(TracingFeature.create(tracing));
+        environment.lifecycle().manage(new Managed() {
+            @Override
+            public void start() throws Exception {
+                // nothing to start
+            }
+
+            @Override
+            public void stop() throws Exception {
+                tracing.close();
+            }
+        });
 
         return Optional.of(tracing);
     }

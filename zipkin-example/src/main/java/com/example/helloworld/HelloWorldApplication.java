@@ -66,7 +66,7 @@ public class HelloWorldApplication
             client = new ZipkinClientBuilder(environment, tracing.get())
                     .build(configuration.getZipkinClient());
 
-            BraveRxJavaSchedulersHook hook = new BraveRxJavaSchedulersHook(
+            final BraveRxJavaSchedulersHook hook = new BraveRxJavaSchedulersHook(
                     tracing.get());
             RxJavaHooks.setOnScheduleAction(hook::onSchedule);
         } else {
