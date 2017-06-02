@@ -20,8 +20,8 @@ import javax.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.github.kristofa.brave.Brave;
 import com.github.kristofa.brave.LoggingReporter;
+import brave.Tracing;
 import io.dropwizard.setup.Environment;
 
 @JsonTypeName("logging")
@@ -31,14 +31,14 @@ public class LoggingZipkinFactory extends AbstractZipkinFactory {
             .getLogger(LoggingZipkinFactory.class);
 
     /**
-     * Build a new {@link Brave} instance for interfacing with Zipkin
+     * Build a new {@link Tracing} instance for interfacing with Zipkin
      *
      * @param environment
      *            Environment
-     * @return Brave instance
+     * @return Tracing instance
      */
     @Override
-    public Optional<Brave> build(@Nonnull final Environment environment) {
+    public Optional<Tracing> build(@Nonnull final Environment environment) {
         if (!isEnabled()) {
             LOGGER.warn("Zipkin tracing is disabled");
             return Optional.empty();
@@ -48,6 +48,6 @@ public class LoggingZipkinFactory extends AbstractZipkinFactory {
 
         LOGGER.info("Sending spans to log");
 
-        return buildBrave(environment, reporter);
+        return buildTracing(environment, reporter);
     }
 }

@@ -24,12 +24,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.github.kristofa.brave.Brave;
-import com.github.kristofa.brave.Sampler;
-import com.github.kristofa.brave.jaxrs2.BraveTracingFeature;
 import com.google.common.net.InetAddresses;
+import brave.Tracing;
+import brave.context.slf4j.MDCCurrentTraceContext;
+import brave.jaxrs2.TracingFeature;
+import brave.sampler.Sampler;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.validation.PortRange;
+import zipkin.Endpoint;
 import zipkin.Span;
 import zipkin.reporter.Reporter;
 
@@ -145,27 +147,33 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
     }
 
     /**
-     * Build a new {@link Brave} instance for interfacing with Zipkin
+     * Build a new {@link Tracing} instance for interfacing with Zipkin
      *
      * @param environment
      *            Environment
      * @param reporter
      *            reporter
-     * @return Brave instance
+     * @return Tracing instance
      */
-    protected Optional<Brave> buildBrave(@Nonnull final Environment environment,
+    protected Optional<Tracing> buildTracing(
+            @Nonnull final Environment environment,
             @Nonnull final Reporter<Span> reporter) {
 
         LOGGER.info("Registering Zipkin service ({}) at <{}:{}>", serviceName,
                 serviceHost, servicePort);
 
-        final Brave brave = new Brave.Builder(toInt(serviceHost), servicePort,
-                serviceName).reporter(reporter).traceSampler(getSampler())
-                        .traceId128Bit(traceId128Bit).build();
+        final Endpoint endpoint = Endpoint.builder().ipv4(toInt(serviceHost))
+                .port(servicePort).serviceName(serviceName).build();
+
+        final Tracing tracing = Tracing.newBuilder()
+                .currentTraceContext(MDCCurrentTraceContext.create())
+                .localServiceName(serviceName).localEndpoint(endpoint)
+                .reporter(reporter).sampler(getSampler())
+                .traceId128Bit(traceId128Bit).build();
 
         // Register the tracing feature for client and server requests
-        environment.jersey().register(BraveTracingFeature.create(brave));
+        environment.jersey().register(TracingFeature.create(tracing));
 
-        return Optional.of(brave);
+        return Optional.of(tracing);
     }
 }

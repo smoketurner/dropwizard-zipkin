@@ -17,7 +17,7 @@ package com.smoketurner.dropwizard.zipkin;
 
 import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.github.kristofa.brave.Brave;
+import brave.Tracing;
 import io.dropwizard.jackson.Discoverable;
 import io.dropwizard.setup.Environment;
 
@@ -28,13 +28,13 @@ import io.dropwizard.setup.Environment;
 public interface ZipkinFactory extends Discoverable {
 
     /**
-     * Build a Brave instance for the given Dropwizard application.
+     * Build a Tracing instance for the given Dropwizard application.
      *
      * @param environment
      *            the application's environment
-     * @return a {@link Brave} instance
+     * @return a {@link Tracing} instance
      */
-    Optional<Brave> build(Environment environment);
+    Optional<Tracing> build(Environment environment);
 
     /**
      * Set the name of this service.
