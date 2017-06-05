@@ -20,7 +20,7 @@ import javax.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import brave.Tracing;
+import brave.http.HttpTracing;
 import io.dropwizard.setup.Environment;
 import zipkin.reporter.Reporter;
 
@@ -31,14 +31,14 @@ public class EmptyZipkinFactory extends AbstractZipkinFactory {
             .getLogger(EmptyZipkinFactory.class);
 
     /**
-     * Build a new {@link Tracing} instance for interfacing with Zipkin
+     * Build a new {@link HttpTracing} instance for interfacing with Zipkin
      *
      * @param environment
      *            Environment
-     * @return Tracing instance
+     * @return HttpTracing instance
      */
     @Override
-    public Optional<Tracing> build(@Nonnull final Environment environment) {
+    public Optional<HttpTracing> build(@Nonnull final Environment environment) {
         if (!isEnabled()) {
             LOGGER.warn("Zipkin tracing is disabled");
             return Optional.empty();

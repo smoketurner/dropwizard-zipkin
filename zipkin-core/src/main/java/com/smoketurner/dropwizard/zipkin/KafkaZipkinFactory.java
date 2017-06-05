@@ -24,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.smoketurner.dropwizard.zipkin.managed.ReporterManager;
 import com.smoketurner.dropwizard.zipkin.metrics.DropwizardReporterMetrics;
-import brave.Tracing;
+import brave.http.HttpTracing;
 import io.dropwizard.setup.Environment;
 import zipkin.Span;
 import zipkin.reporter.AsyncReporter;
@@ -64,14 +64,14 @@ public class KafkaZipkinFactory extends AbstractZipkinFactory {
     }
 
     /**
-     * Build a new {@link Tracing} instance for interfacing with Zipkin
+     * Build a new {@link HttpTracing} instance for interfacing with Zipkin
      *
      * @param environment
      *            Environment
      * @return Brave instance
      */
     @Override
-    public Optional<Tracing> build(@Nonnull final Environment environment) {
+    public Optional<HttpTracing> build(@Nonnull final Environment environment) {
         if (!isEnabled()) {
             LOGGER.warn("Zipkin tracing is disabled");
             return Optional.empty();

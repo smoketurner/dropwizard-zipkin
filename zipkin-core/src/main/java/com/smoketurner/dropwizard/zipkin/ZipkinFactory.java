@@ -17,24 +17,24 @@ package com.smoketurner.dropwizard.zipkin;
 
 import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import brave.Tracing;
+import brave.http.HttpTracing;
 import io.dropwizard.jackson.Discoverable;
 import io.dropwizard.setup.Environment;
 
 /**
  * A factory for building {@link Brave} instances for Dropwizard applications.
  */
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "collector", defaultImpl = LoggingZipkinFactory.class)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "collector", defaultImpl = ConsoleZipkinFactory.class)
 public interface ZipkinFactory extends Discoverable {
 
     /**
-     * Build a Tracing instance for the given Dropwizard application.
+     * Build a HttpTracing instance for the given Dropwizard application.
      *
      * @param environment
      *            the application's environment
-     * @return a {@link Tracing} instance
+     * @return a {@link HttpTracing} instance
      */
-    Optional<Tracing> build(Environment environment);
+    Optional<HttpTracing> build(Environment environment);
 
     /**
      * Set the name of this service.

@@ -27,6 +27,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.net.InetAddresses;
 import brave.Tracing;
 import brave.context.slf4j.MDCCurrentTraceContext;
+import brave.http.HttpTracing;
 import brave.jaxrs2.TracingFeature;
 import brave.sampler.Sampler;
 import io.dropwizard.lifecycle.Managed;
@@ -41,7 +42,6 @@ import zipkin.reporter.Reporter;
  * @see EmptyZipkinFactory
  * @see HttpZipkinFactory
  * @see KafkaZipkinFactory
- * @see LoggingZipkinFactory
  * @see ScribeZipkinFactory
  */
 public abstract class AbstractZipkinFactory implements ZipkinFactory {
@@ -148,15 +148,15 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
     }
 
     /**
-     * Build a new {@link Tracing} instance for interfacing with Zipkin
+     * Build a new {@link HttpTracing} instance for interfacing with Zipkin
      *
      * @param environment
      *            Environment
      * @param reporter
      *            reporter
-     * @return Tracing instance
+     * @return HttpTracing instance
      */
-    protected Optional<Tracing> buildTracing(
+    protected Optional<HttpTracing> buildTracing(
             @Nonnull final Environment environment,
             @Nonnull final Reporter<Span> reporter) {
 
@@ -172,8 +172,10 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
                 .reporter(reporter).sampler(getSampler())
                 .traceId128Bit(traceId128Bit).build();
 
+        final HttpTracing httpTracing = HttpTracing.create(tracing);
+
         // Register the tracing feature for client and server requests
-        environment.jersey().register(TracingFeature.create(tracing));
+        environment.jersey().register(TracingFeature.create(httpTracing));
         environment.lifecycle().manage(new Managed() {
             @Override
             public void start() throws Exception {
@@ -186,6 +188,6 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
             }
         });
 
-        return Optional.of(tracing);
+        return Optional.of(httpTracing);
     }
 }

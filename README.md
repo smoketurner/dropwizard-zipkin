@@ -55,7 +55,7 @@ zipkin:
   servicePort: 8080
 
   # Optional properties
-  # Span collector to use (scribe, logging, http, kafka or empty)
+  # Span collector to use (scribe, console, http, kafka or empty)
   collector: http
   # If using the scribe collector, provide the endpoint
   endpoint: 127.0.0.1:9411

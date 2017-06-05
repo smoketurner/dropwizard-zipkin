@@ -17,6 +17,7 @@ package com.smoketurner.dropwizard.zipkin.rx;
 
 import java.util.Objects;
 import brave.Tracing;
+import brave.propagation.CurrentTraceContext;
 import rx.functions.Action0;
 import rx.plugins.RxJavaSchedulersHook;
 
@@ -27,8 +28,8 @@ public final class BraveRxJavaSchedulersHook extends RxJavaSchedulersHook {
     /**
      * Constructor
      *
-     * @param brave
-     *            Brave instance
+     * @param tracing
+     *            Tracing instance
      */
     public BraveRxJavaSchedulersHook(final Tracing tracing) {
         this.tracing = Objects.requireNonNull(tracing);

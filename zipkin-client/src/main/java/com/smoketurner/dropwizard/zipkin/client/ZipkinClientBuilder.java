@@ -18,14 +18,14 @@ package com.smoketurner.dropwizard.zipkin.client;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.ws.rs.client.Client;
-import brave.Tracing;
+import brave.http.HttpTracing;
 import brave.jaxrs2.TracingFeature;
 import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.setup.Environment;
 
 public class ZipkinClientBuilder {
     private final Environment environment;
-    private final Tracing tracing;
+    private final HttpTracing tracing;
 
     /**
      * Constructor
@@ -33,10 +33,10 @@ public class ZipkinClientBuilder {
      * @param environment
      *            Environment
      * @param tracing
-     *            Tracing instance
+     *            HttpTracing instance
      */
     public ZipkinClientBuilder(@Nonnull final Environment environment,
-            @Nonnull final Tracing tracing) {
+            @Nonnull final HttpTracing tracing) {
         this.environment = Objects.requireNonNull(environment);
         this.tracing = Objects.requireNonNull(tracing);
     }
