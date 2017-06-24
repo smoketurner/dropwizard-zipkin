@@ -168,9 +168,8 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
 
         final Tracing tracing = Tracing.newBuilder()
                 .currentTraceContext(MDCCurrentTraceContext.create())
-                .localServiceName(serviceName).localEndpoint(endpoint)
-                .reporter(reporter).sampler(getSampler())
-                .traceId128Bit(traceId128Bit).build();
+                .localEndpoint(endpoint).reporter(reporter)
+                .sampler(getSampler()).traceId128Bit(traceId128Bit).build();
 
         final HttpTracing httpTracing = HttpTracing.create(tracing);
 
