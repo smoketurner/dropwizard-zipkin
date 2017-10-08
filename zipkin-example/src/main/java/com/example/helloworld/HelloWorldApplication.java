@@ -22,13 +22,11 @@ import com.smoketurner.dropwizard.zipkin.ZipkinBundle;
 import com.smoketurner.dropwizard.zipkin.ZipkinFactory;
 import com.smoketurner.dropwizard.zipkin.client.ZipkinClientBuilder;
 import com.smoketurner.dropwizard.zipkin.client.ZipkinClientConfiguration;
-import com.smoketurner.dropwizard.zipkin.rx.BraveRxJavaSchedulersHook;
 import brave.http.HttpTracing;
 import io.dropwizard.Application;
 import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import rx.plugins.RxJavaHooks;
 
 public class HelloWorldApplication
         extends Application<HelloWorldConfiguration> {
@@ -65,10 +63,6 @@ public class HelloWorldApplication
         if (tracing.isPresent()) {
             client = new ZipkinClientBuilder(environment, tracing.get())
                     .build(configuration.getZipkinClient());
-
-            final BraveRxJavaSchedulersHook hook = new BraveRxJavaSchedulersHook(
-                    tracing.get().tracing());
-            RxJavaHooks.setOnScheduleAction(hook::onSchedule);
         } else {
             final ZipkinClientConfiguration clientConfig = configuration
                     .getZipkinClient();
