@@ -18,12 +18,12 @@ package com.example.helloworld;
 import java.util.Optional;
 import javax.ws.rs.client.Client;
 import com.example.helloworld.resources.HelloWorldResource;
-import com.github.kristofa.brave.Brave;
 import com.smoketurner.dropwizard.zipkin.ZipkinBundle;
 import com.smoketurner.dropwizard.zipkin.ZipkinFactory;
 import com.smoketurner.dropwizard.zipkin.client.ZipkinClientBuilder;
 import com.smoketurner.dropwizard.zipkin.client.ZipkinClientConfiguration;
 import com.smoketurner.dropwizard.zipkin.rx.BraveRxJavaSchedulersHook;
+import brave.http.HttpTracing;
 import io.dropwizard.Application;
 import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.setup.Bootstrap;
@@ -58,16 +58,16 @@ public class HelloWorldApplication
     public void run(HelloWorldConfiguration configuration,
             Environment environment) throws Exception {
 
-        final Optional<Brave> brave = configuration.getZipkinFactory()
+        final Optional<HttpTracing> tracing = configuration.getZipkinFactory()
                 .build(environment);
 
         final Client client;
-        if (brave.isPresent()) {
-            client = new ZipkinClientBuilder(environment, brave.get())
+        if (tracing.isPresent()) {
+            client = new ZipkinClientBuilder(environment, tracing.get())
                     .build(configuration.getZipkinClient());
 
-            BraveRxJavaSchedulersHook hook = new BraveRxJavaSchedulersHook(
-                    brave.get());
+            final BraveRxJavaSchedulersHook hook = new BraveRxJavaSchedulersHook(
+                    tracing.get().tracing());
             RxJavaHooks.setOnScheduleAction(hook::onSchedule);
         } else {
             final ZipkinClientConfiguration clientConfig = configuration

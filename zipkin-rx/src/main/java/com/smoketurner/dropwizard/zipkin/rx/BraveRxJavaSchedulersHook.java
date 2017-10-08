@@ -16,29 +16,28 @@
 package com.smoketurner.dropwizard.zipkin.rx;
 
 import java.util.Objects;
-import com.github.kristofa.brave.Brave;
-import com.github.kristofa.brave.ServerSpan;
-import com.github.kristofa.brave.ServerSpanThreadBinder;
+import brave.Tracing;
+import brave.propagation.CurrentTraceContext;
 import rx.functions.Action0;
 import rx.plugins.RxJavaSchedulersHook;
 
 public final class BraveRxJavaSchedulersHook extends RxJavaSchedulersHook {
 
-    private final Brave brave;
+    private final Tracing tracing;
 
     /**
      * Constructor
      *
-     * @param brave
-     *            Brave instance
+     * @param tracing
+     *            Tracing instance
      */
-    public BraveRxJavaSchedulersHook(final Brave brave) {
-        this.brave = Objects.requireNonNull(brave);
+    public BraveRxJavaSchedulersHook(final Tracing tracing) {
+        this.tracing = Objects.requireNonNull(tracing);
     }
 
     @Override
     public Action0 onSchedule(final Action0 action) {
-        final ServerSpanThreadBinder binder = brave.serverSpanThreadBinder();
+        final ServerSpanThreadBinder binder = tracing.serverSpanThreadBinder();
         final ServerSpan span = binder.getCurrentServerSpan();
         return new Action0() {
             @Override

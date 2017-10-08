@@ -32,7 +32,7 @@ logging:
   loggers:
     com.smoketurner.dropwizard.zipkin: DEBUG
     com.example.helloworld: DEBUG
-    com.github.kristofa.brave: DEBUG
+    brave: DEBUG
   appenders:
     - type: console
       timeZone: UTC

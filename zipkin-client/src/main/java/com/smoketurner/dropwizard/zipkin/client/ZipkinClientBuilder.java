@@ -18,28 +18,27 @@ package com.smoketurner.dropwizard.zipkin.client;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.ws.rs.client.Client;
-import com.github.kristofa.brave.Brave;
-import com.github.kristofa.brave.jaxrs2.BraveClientRequestFilter;
-import com.github.kristofa.brave.jaxrs2.BraveClientResponseFilter;
+import brave.http.HttpTracing;
+import brave.jaxrs2.TracingFeature;
 import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.setup.Environment;
 
 public class ZipkinClientBuilder {
     private final Environment environment;
-    private final Brave brave;
+    private final HttpTracing tracing;
 
     /**
      * Constructor
      *
      * @param environment
      *            Environment
-     * @param brave
-     *            Brave instance
+     * @param tracing
+     *            HttpTracing instance
      */
     public ZipkinClientBuilder(@Nonnull final Environment environment,
-            @Nonnull final Brave brave) {
+            @Nonnull final HttpTracing tracing) {
         this.environment = Objects.requireNonNull(environment);
-        this.brave = Objects.requireNonNull(brave);
+        this.tracing = Objects.requireNonNull(tracing);
     }
 
     /**
@@ -64,12 +63,7 @@ public class ZipkinClientBuilder {
      * @return an instrumented Jersey client
      */
     public Client build(@Nonnull final Client client) {
-        // Register the request filter for outgoing client requests
-        client.register(BraveClientRequestFilter.create(brave));
-
-        // Register the response filter for incoming client requests
-        client.register(BraveClientResponseFilter.create(brave));
-
+        client.register(TracingFeature.create(tracing));
         return client;
     }
 }

@@ -18,7 +18,7 @@ package com.example.helloworld;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.smoketurner.dropwizard.zipkin.LoggingZipkinFactory;
+import com.smoketurner.dropwizard.zipkin.ConsoleZipkinFactory;
 import com.smoketurner.dropwizard.zipkin.ZipkinFactory;
 import com.smoketurner.dropwizard.zipkin.client.ZipkinClientConfiguration;
 import io.dropwizard.Configuration;
@@ -27,7 +27,7 @@ public class HelloWorldConfiguration extends Configuration {
 
     @Valid
     @NotNull
-    public final ZipkinFactory zipkin = new LoggingZipkinFactory();
+    public final ZipkinFactory zipkin = new ConsoleZipkinFactory();
 
     @Valid
     @NotNull
