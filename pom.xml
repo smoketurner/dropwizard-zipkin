@@ -36,7 +36,6 @@
         <module>zipkin-core</module>
         <module>zipkin-client</module>
         <module>zipkin-example</module>
-        <!-- <module>zipkin-rx</module> -->
     </modules>
 
     <developers>
