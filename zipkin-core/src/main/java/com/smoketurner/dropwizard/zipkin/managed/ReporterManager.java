@@ -20,9 +20,9 @@ import javax.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import io.dropwizard.lifecycle.Managed;
-import zipkin.Component.CheckResult;
-import zipkin.reporter.AsyncReporter;
-import zipkin.reporter.Sender;
+import zipkin2.CheckResult;
+import zipkin2.reporter.AsyncReporter;
+import zipkin2.reporter.Sender;
 
 public class ReporterManager implements Managed {
 
@@ -49,9 +49,9 @@ public class ReporterManager implements Managed {
     @Override
     public void start() throws Exception {
         final CheckResult result = reporter.check();
-        if (!result.ok) {
+        if (!result.ok()) {
             LOGGER.error("Unable to connect to Zipkin destination",
-                    result.exception);
+                    result.error());
         } else {
             LOGGER.info("Successfully connected to Zipkin");
         }

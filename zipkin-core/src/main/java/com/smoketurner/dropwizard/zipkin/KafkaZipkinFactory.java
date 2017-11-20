@@ -26,10 +26,10 @@ import com.smoketurner.dropwizard.zipkin.managed.ReporterManager;
 import com.smoketurner.dropwizard.zipkin.metrics.DropwizardReporterMetrics;
 import brave.http.HttpTracing;
 import io.dropwizard.setup.Environment;
-import zipkin.Span;
-import zipkin.reporter.AsyncReporter;
-import zipkin.reporter.ReporterMetrics;
-import zipkin.reporter.kafka10.KafkaSender;
+import zipkin2.Span;
+import zipkin2.reporter.AsyncReporter;
+import zipkin2.reporter.ReporterMetrics;
+import zipkin2.reporter.kafka11.KafkaSender;
 
 @JsonTypeName("kafka")
 public class KafkaZipkinFactory extends AbstractZipkinFactory {
@@ -80,7 +80,7 @@ public class KafkaZipkinFactory extends AbstractZipkinFactory {
         final ReporterMetrics metricsHandler = new DropwizardReporterMetrics(
                 environment.metrics());
 
-        final KafkaSender sender = KafkaSender.builder()
+        final KafkaSender sender = KafkaSender.newBuilder()
                 .bootstrapServers(bootstrapServers).topic(topic).build();
 
         final AsyncReporter<Span> reporter = AsyncReporter.builder(sender)

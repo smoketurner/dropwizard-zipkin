@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import brave.http.HttpTracing;
 import io.dropwizard.setup.Environment;
-import zipkin.reporter.Reporter;
+import zipkin2.reporter.Reporter;
 
 @JsonTypeName("empty")
 public class EmptyZipkinFactory extends AbstractZipkinFactory {
