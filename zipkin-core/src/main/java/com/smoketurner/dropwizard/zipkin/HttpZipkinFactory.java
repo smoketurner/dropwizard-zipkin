@@ -26,10 +26,10 @@ import com.smoketurner.dropwizard.zipkin.managed.ReporterManager;
 import com.smoketurner.dropwizard.zipkin.metrics.DropwizardReporterMetrics;
 import brave.http.HttpTracing;
 import io.dropwizard.setup.Environment;
-import zipkin.Span;
-import zipkin.reporter.AsyncReporter;
-import zipkin.reporter.ReporterMetrics;
-import zipkin.reporter.urlconnection.URLConnectionSender;
+import zipkin2.Span;
+import zipkin2.reporter.AsyncReporter;
+import zipkin2.reporter.ReporterMetrics;
+import zipkin2.reporter.urlconnection.URLConnectionSender;
 
 @JsonTypeName("http")
 public class HttpZipkinFactory extends AbstractZipkinFactory {

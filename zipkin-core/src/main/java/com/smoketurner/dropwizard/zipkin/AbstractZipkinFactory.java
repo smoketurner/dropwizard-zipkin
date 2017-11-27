@@ -24,7 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.net.InetAddresses;
 import brave.Tracing;
 import brave.context.slf4j.MDCCurrentTraceContext;
 import brave.http.HttpTracing;
@@ -33,16 +32,15 @@ import brave.sampler.Sampler;
 import io.dropwizard.lifecycle.Managed;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.validation.PortRange;
-import zipkin.Endpoint;
-import zipkin.Span;
-import zipkin.reporter.Reporter;
+import zipkin2.Endpoint;
+import zipkin2.Span;
+import zipkin2.reporter.Reporter;
 
 /**
  * @see ConsoleZipkinFactory
  * @see EmptyZipkinFactory
  * @see HttpZipkinFactory
  * @see KafkaZipkinFactory
- * @see ScribeZipkinFactory
  */
 public abstract class AbstractZipkinFactory implements ZipkinFactory {
 
@@ -143,10 +141,6 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
         this.traceId128Bit = traceId128Bit;
     }
 
-    private static int toInt(final String ip) {
-        return InetAddresses.coerceToInteger(InetAddresses.forString(ip));
-    }
-
     /**
      * Build a new {@link HttpTracing} instance for interfacing with Zipkin
      *
@@ -163,12 +157,12 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
         LOGGER.info("Registering Zipkin service ({}) at <{}:{}>", serviceName,
                 serviceHost, servicePort);
 
-        final Endpoint endpoint = Endpoint.builder().ipv4(toInt(serviceHost))
+        final Endpoint endpoint = Endpoint.newBuilder().ip(serviceHost)
                 .port(servicePort).serviceName(serviceName).build();
 
         final Tracing tracing = Tracing.newBuilder()
                 .currentTraceContext(MDCCurrentTraceContext.create())
-                .localEndpoint(endpoint).reporter(reporter)
+                .localEndpoint(endpoint).spanReporter(reporter)
                 .sampler(getSampler()).traceId128Bit(traceId128Bit).build();
 
         final HttpTracing httpTracing = HttpTracing.create(tracing);

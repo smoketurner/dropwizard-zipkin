@@ -22,18 +22,14 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>io.zipkin.reporter</groupId>
-            <artifactId>zipkin-sender-libthrift</artifactId>
-            <version>${zipkin.reporter.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.zipkin.reporter</groupId>
+            <groupId>io.zipkin.reporter2</groupId>
             <artifactId>zipkin-sender-urlconnection</artifactId>
             <version>${zipkin.reporter.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.zipkin.reporter</groupId>
-            <artifactId>zipkin-sender-kafka10</artifactId>
+            <!-- TODO: this should be optional I think, right? or at least its dep tree -->
+            <groupId>io.zipkin.reporter2</groupId>
+            <artifactId>zipkin-sender-kafka11</artifactId>
             <version>${zipkin.reporter.version}</version>
         </dependency>
     </dependencies>
