@@ -22,7 +22,7 @@ import io.dropwizard.client.JerseyClientConfiguration;
 public class ZipkinClientConfiguration extends JerseyClientConfiguration {
 
     @NotEmpty
-    private String serviceName;
+    private String serviceName = "";
 
     @JsonProperty
     public String getServiceName() {

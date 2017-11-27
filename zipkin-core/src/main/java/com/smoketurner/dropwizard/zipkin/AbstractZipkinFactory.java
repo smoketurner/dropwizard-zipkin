@@ -17,6 +17,7 @@ package com.smoketurner.dropwizard.zipkin;
 
 import java.util.Optional;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -50,7 +51,7 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
 
     private boolean enabled = true;
 
-    private String serviceName;
+    private String serviceName = "";
 
     @NotEmpty
     private String serviceHost = "127.0.0.1";
@@ -62,6 +63,7 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
     @Max(1)
     private float sampleRate = 1.0f;
 
+    @Nullable
     private Sampler sampler = null;
 
     private boolean traceId128Bit = false;
@@ -127,7 +129,7 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
     }
 
     @JsonIgnore
-    public void setSampler(Sampler sampler) {
+    public void setSampler(@Nullable Sampler sampler) {
         this.sampler = sampler;
     }
 

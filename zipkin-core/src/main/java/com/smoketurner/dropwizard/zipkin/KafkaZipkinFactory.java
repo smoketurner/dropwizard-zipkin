@@ -38,7 +38,7 @@ public class KafkaZipkinFactory extends AbstractZipkinFactory {
             .getLogger(KafkaZipkinFactory.class);
 
     @NotEmpty
-    private String bootstrapServers;
+    private String bootstrapServers = "";
 
     @NotEmpty
     private String topic = "zipkin";
