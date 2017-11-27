@@ -16,13 +16,15 @@
 package com.smoketurner.dropwizard.zipkin;
 
 import java.util.Optional;
+import javax.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import brave.http.HttpTracing;
 import io.dropwizard.jackson.Discoverable;
 import io.dropwizard.setup.Environment;
 
 /**
- * A factory for building {@link HttpTracing} instances for Dropwizard applications.
+ * A factory for building {@link HttpTracing} instances for Dropwizard
+ * applications.
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "collector", defaultImpl = ConsoleZipkinFactory.class)
 public interface ZipkinFactory extends Discoverable {
@@ -49,5 +51,6 @@ public interface ZipkinFactory extends Discoverable {
      *
      * @return name of the service
      */
+    @Nullable
     String getServiceName();
 }

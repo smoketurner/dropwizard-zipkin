@@ -51,7 +51,8 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
 
     private boolean enabled = true;
 
-    private String serviceName = "";
+    @Nullable
+    private String serviceName;
 
     @NotEmpty
     private String serviceHost = "127.0.0.1";
@@ -79,6 +80,7 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
     }
 
     @Override
+    @Nullable
     @JsonProperty
     public String getServiceName() {
         return serviceName;

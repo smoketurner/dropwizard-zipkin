@@ -88,7 +88,7 @@ public class KafkaZipkinFactory extends AbstractZipkinFactory {
 
         environment.lifecycle().manage(new ReporterManager(reporter, sender));
 
-        LOGGER.info("Sending spans to Kafka topic '{}' at: {}", topic,
+        LOGGER.info("Sending spans to Kafka topic \"{}\" at: {}", topic,
                 bootstrapServers);
 
         return buildTracing(environment, reporter);
