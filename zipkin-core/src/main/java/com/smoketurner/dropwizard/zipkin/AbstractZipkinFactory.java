@@ -122,6 +122,8 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
         this.sampleRate = sampleRate;
     }
 
+    private HttpTracingBuilder httpTracingBuilder = HttpTracingBuilder.DEFAULT;
+
     @JsonIgnore
     public Sampler getSampler() {
         if (sampler == null) {
@@ -143,6 +145,10 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
     @JsonProperty
     public void setTraceId128Bit(boolean traceId128Bit) {
         this.traceId128Bit = traceId128Bit;
+    }
+
+    public final void setHttpTracingBuilder(HttpTracingBuilder httpTracingBuilder) {
+        this.httpTracingBuilder = httpTracingBuilder;
     }
 
     /**
@@ -169,7 +175,7 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
                 .localEndpoint(endpoint).spanReporter(reporter)
                 .sampler(getSampler()).traceId128Bit(traceId128Bit).build();
 
-        final HttpTracing httpTracing = HttpTracing.create(tracing);
+        final HttpTracing httpTracing = httpTracingBuilder.build(tracing);
 
         // Register the tracing feature for client and server requests
         environment.jersey().register(TracingFeature.create(httpTracing));
