@@ -27,6 +27,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import brave.Tracing;
 import brave.context.slf4j.MDCCurrentTraceContext;
+import brave.http.HttpClientParser;
+import brave.http.HttpSampler;
+import brave.http.HttpServerParser;
 import brave.http.HttpTracing;
 import brave.jaxrs2.TracingFeature;
 import brave.sampler.Sampler;
@@ -66,6 +69,11 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
 
     @Nullable
     private Sampler sampler = null;
+
+    private HttpClientParser clientParser = new HttpClientParser();
+    private HttpSampler clientSampler = HttpSampler.TRACE_ID;
+    private HttpServerParser serverParser = new HttpServerParser();
+    private HttpSampler serverSampler = HttpSampler.TRACE_ID;
 
     private boolean traceId128Bit = false;
 
@@ -145,6 +153,46 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
         this.traceId128Bit = traceId128Bit;
     }
 
+    @JsonIgnore
+    public HttpClientParser getClientParser() {
+        return clientParser;
+    }
+
+    @JsonIgnore
+    public void setClientParser(HttpClientParser parser) {
+        this.clientParser = parser;
+    }
+
+    @JsonIgnore
+    public HttpSampler getClientSampler() {
+        return clientSampler;
+    }
+
+    @JsonIgnore
+    public void setClientSampler(HttpSampler sampler) {
+        this.clientSampler = sampler;
+    }
+
+    @JsonIgnore
+    public HttpServerParser getServerParser() {
+        return serverParser;
+    }
+
+    @JsonIgnore
+    public void setServerParser(HttpServerParser parser) {
+        this.serverParser = parser;
+    }
+
+    @JsonIgnore
+    public HttpSampler getServerSampler() {
+        return serverSampler;
+    }
+
+    @JsonIgnore
+    public void setServerSampler(HttpSampler sampler) {
+        this.serverSampler = sampler;
+    }
+
     /**
      * Build a new {@link HttpTracing} instance for interfacing with Zipkin
      *
@@ -169,7 +217,10 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
                 .localEndpoint(endpoint).spanReporter(reporter)
                 .sampler(getSampler()).traceId128Bit(traceId128Bit).build();
 
-        final HttpTracing httpTracing = HttpTracing.create(tracing);
+        final HttpTracing httpTracing = HttpTracing.newBuilder(tracing)
+                .clientParser(clientParser).clientSampler(clientSampler)
+                .serverParser(serverParser).serverSampler(serverSampler)
+                .build();
 
         // Register the tracing feature for client and server requests
         environment.jersey().register(TracingFeature.create(httpTracing));
