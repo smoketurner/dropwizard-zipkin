@@ -35,7 +35,7 @@ public void initialize(Bootstrap<MyConfiguration> bootstrap) {
 
 @Override
 public void run(MyConfiguration configuration, Environment environment) throws Exception {
-    Optional<Brave> brave = configuration.getZipkinFactory().build(environment);
+    Optional<HttpTracing> tracing = configuration.getZipkinFactory().build(environment);
 }
 ```
 
