@@ -28,8 +28,9 @@
         <file.encoding>UTF-8</file.encoding>
         <javadoc.doclint.none>-Xdoclint:none</javadoc.doclint.none>
         <dropwizard.version>1.2.2</dropwizard.version>
-        <brave.version>4.12.0</brave.version>
-        <zipkin.reporter.version>2.2.0</zipkin.reporter.version>
+        <brave.version>4.13.2</brave.version>
+        <zipkin.version>2.4.3</zipkin.version>
+        <zipkin.reporter.version>2.3.0</zipkin.reporter.version>
     </properties>
 
     <modules>
@@ -111,11 +112,6 @@
         <dependency>
             <groupId>io.zipkin.brave</groupId>
             <artifactId>brave-instrumentation-jaxrs2</artifactId>
-            <version>${brave.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.zipkin.brave</groupId>
-            <artifactId>brave-context-slf4j</artifactId>
             <version>${brave.version}</version>
         </dependency>
     </dependencies>
@@ -203,7 +199,7 @@
                                 <path>
                                     <groupId>com.uber.nullaway</groupId>
                                     <artifactId>nullaway</artifactId>
-                                    <version>0.2.0</version>
+                                    <version>0.3.2</version>
                                 </path>
                             </annotationProcessorPaths>
                             <compilerArgs>
