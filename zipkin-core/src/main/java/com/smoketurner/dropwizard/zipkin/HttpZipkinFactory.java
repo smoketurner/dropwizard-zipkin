@@ -15,6 +15,7 @@
  */
 package com.smoketurner.dropwizard.zipkin;
 
+import java.net.URI;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -68,7 +69,7 @@ public class HttpZipkinFactory extends AbstractZipkinFactory {
                 environment.metrics());
 
         final URLConnectionSender sender = URLConnectionSender
-                .create(baseUrl + "api/v1/spans");
+                .create(URI.create(baseUrl).resolve("api/v2/spans").toString());
 
         final AsyncReporter<Span> reporter = AsyncReporter.builder(sender)
                 .metrics(metricsHandler).build();
