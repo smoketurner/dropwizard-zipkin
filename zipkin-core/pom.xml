@@ -22,15 +22,42 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>io.zipkin.brave</groupId>
+            <artifactId>brave-context-slf4j</artifactId>
+            <version>${brave.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.zipkin.java</groupId>
+            <artifactId>zipkin</artifactId>
+            <version>${zipkin.version}</version>
+        </dependency>
+        <dependency>
             <groupId>io.zipkin.reporter2</groupId>
             <artifactId>zipkin-sender-urlconnection</artifactId>
             <version>${zipkin.reporter.version}</version>
         </dependency>
         <dependency>
-            <!-- TODO: this should be optional I think, right? or at least its dep tree -->
             <groupId>io.zipkin.reporter2</groupId>
             <artifactId>zipkin-sender-kafka11</artifactId>
             <version>${zipkin.reporter.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.kafka</groupId>
+                    <artifactId>kafka-clients</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>io.zipkin.reporter2</groupId>
+            <artifactId>zipkin-sender-amqp-client</artifactId>
+            <version>${zipkin.reporter.version}</version>
+            <!-- can't exclude this because RabbitMQSender references rabbitmq.client.Address
+            <exclusions>
+                <exclusion>
+                    <groupId>com.rabbitmq</groupId>
+                    <artifactId>amqp-client</artifactId>
+                </exclusion>
+            </exclusions> -->
         </dependency>
     </dependencies>
 </project>

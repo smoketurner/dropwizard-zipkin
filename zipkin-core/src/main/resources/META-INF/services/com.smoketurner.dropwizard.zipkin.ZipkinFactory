@@ -2,3 +2,4 @@ com.smoketurner.dropwizard.zipkin.ConsoleZipkinFactory
 com.smoketurner.dropwizard.zipkin.EmptyZipkinFactory
 com.smoketurner.dropwizard.zipkin.HttpZipkinFactory
 com.smoketurner.dropwizard.zipkin.KafkaZipkinFactory
+com.smoketurner.dropwizard.zipkin.RabbitMQZipkinFactory
