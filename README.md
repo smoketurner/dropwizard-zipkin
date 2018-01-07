@@ -13,7 +13,17 @@ Dependency Info
 <dependency>
     <groupId>com.smoketurner.dropwizard</groupId>
     <artifactId>zipkin-core</artifactId>
-    <version>1.2.2-3</version>
+    <version>1.2.2-4</version>
+</dependency>
+```
+
+Beginning with v1.2.2-4, if you are using the Kafka sender, you must explicitly add the `kafka-clients` dependency into your `pom.xml` as it has been excluded from the `zipkin-core` module.
+
+```xml
+<dependency>
+    <groupId>org.apache.kafka</groupId>
+    <artifactId>kafka-clients</artifactId>
+    <version>0.11.0.2</version>
 </dependency>
 ```
 
@@ -71,7 +81,7 @@ This bundle includes a modified version of the `HelloWorldApplication` from Drop
 <dependency>
     <groupId>com.smoketurner.dropwizard</groupId>
     <artifactId>zipkin-example</artifactId>
-    <version>1.2.2-3</version>
+    <version>1.2.2-4</version>
 </dependency>
 ```
 
@@ -79,7 +89,7 @@ You can execute this application by first starting Zipkin on your local machine 
 
 ```
 mvn clean package
-java -jar zipkin-example/target/zipkin-example-1.2.2-4-SNAPSHOT.jar server zipkin-example/hello-world.yml
+java -jar zipkin-example/target/zipkin-example-1.2.2-5-SNAPSHOT.jar server zipkin-example/hello-world.yml
 ```
 
 This will start the application on port `8080` (admin port `8180`). This application demonstrations the following Zipkin integration points:
