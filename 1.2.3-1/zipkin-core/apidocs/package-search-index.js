@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"com.smoketurner.dropwizard.zipkin"},{"l":"com.smoketurner.dropwizard.zipkin.managed"},{"l":"com.smoketurner.dropwizard.zipkin.metrics"}]
