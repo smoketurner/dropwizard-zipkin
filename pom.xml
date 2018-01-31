@@ -28,8 +28,7 @@
         <file.encoding>UTF-8</file.encoding>
         <javadoc.doclint.none>-Xdoclint:none</javadoc.doclint.none>
         <dropwizard.version>1.2.3</dropwizard.version>
-        <brave.version>4.14.1</brave.version>
-        <zipkin.version>2.4.5</zipkin.version>
+        <brave.version>4.14.3</brave.version>
         <zipkin.reporter.version>2.3.1</zipkin.reporter.version>
     </properties>
 
