@@ -27,11 +27,6 @@
             <version>${brave.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.zipkin.java</groupId>
-            <artifactId>zipkin</artifactId>
-            <version>${zipkin.version}</version>
-        </dependency>
-        <dependency>
             <groupId>io.zipkin.reporter2</groupId>
             <artifactId>zipkin-sender-urlconnection</artifactId>
             <version>${zipkin.reporter.version}</version>
