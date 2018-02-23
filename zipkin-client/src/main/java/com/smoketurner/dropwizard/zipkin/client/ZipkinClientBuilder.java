@@ -19,7 +19,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.ws.rs.client.Client;
 import brave.http.HttpTracing;
-import brave.jaxrs2.TracingFeature;
+import brave.jaxrs2.TracingClientFilter;
 import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.setup.Environment;
 
@@ -43,7 +43,7 @@ public class ZipkinClientBuilder {
 
     /**
      * Build a new Jersey Client that is instrumented for Zipkin
-     * 
+     *
      * @param configuration
      *            Configuration to use for the client
      * @return new Jersey Client
@@ -63,7 +63,7 @@ public class ZipkinClientBuilder {
      * @return an instrumented Jersey client
      */
     public Client build(@Nonnull final Client client) {
-        client.register(TracingFeature.create(tracing));
+        client.register(TracingClientFilter.create(tracing));
         return client;
     }
 }
