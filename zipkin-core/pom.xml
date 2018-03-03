@@ -24,17 +24,14 @@
         <dependency>
             <groupId>io.zipkin.brave</groupId>
             <artifactId>brave-context-slf4j</artifactId>
-            <version>${brave.version}</version>
         </dependency>
         <dependency>
             <groupId>io.zipkin.reporter2</groupId>
             <artifactId>zipkin-sender-urlconnection</artifactId>
-            <version>${zipkin.reporter.version}</version>
         </dependency>
         <dependency>
             <groupId>io.zipkin.reporter2</groupId>
             <artifactId>zipkin-sender-kafka11</artifactId>
-            <version>${zipkin.reporter.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.kafka</groupId>
@@ -45,7 +42,6 @@
         <dependency>
             <groupId>io.zipkin.reporter2</groupId>
             <artifactId>zipkin-sender-amqp-client</artifactId>
-            <version>${zipkin.reporter.version}</version>
             <!-- can't exclude this because RabbitMQSender references rabbitmq.client.Address
             <exclusions>
                 <exclusion>
