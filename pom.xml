@@ -28,7 +28,7 @@
         <file.encoding>UTF-8</file.encoding>
         <javadoc.doclint.none>-Xdoclint:none</javadoc.doclint.none>
         <dropwizard.version>1.3.0</dropwizard.version>
-        <brave.version>4.18.1</brave.version>
+        <brave.version>4.18.2</brave.version>
     </properties>
 
     <modules>
