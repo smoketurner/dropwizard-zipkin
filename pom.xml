@@ -27,8 +27,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <file.encoding>UTF-8</file.encoding>
         <javadoc.doclint.none>-Xdoclint:none</javadoc.doclint.none>
-        <dropwizard.version>1.3.0</dropwizard.version>
-        <brave.version>4.18.2</brave.version>
+        <dropwizard.version>1.3.1</dropwizard.version>
+        <brave.version>4.19.0</brave.version>
     </properties>
 
     <modules>
@@ -207,7 +207,7 @@
                                 <path>
                                     <groupId>com.uber.nullaway</groupId>
                                     <artifactId>nullaway</artifactId>
-                                    <version>0.3.5</version>
+                                    <version>0.4.1</version>
                                 </path>
                             </annotationProcessorPaths>
                             <compilerArgs>
@@ -233,9 +233,9 @@
             </build>
         </profile>
         <profile>
-            <id>jdk9</id>
+            <id>jdk10</id>
             <activation>
-                <jdk>9</jdk>
+                <jdk>10</jdk>
             </activation>
             <build>
                 <plugins>
@@ -243,8 +243,8 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-compiler-plugin</artifactId>
                         <configuration>
-                            <source>9</source>
-                            <target>9</target>
+                            <source>10</source>
+                            <target>10</target>
                             <optimize>true</optimize>
                             <debug>true</debug>
                             <forceJavacCompilerUse>true</forceJavacCompilerUse>
