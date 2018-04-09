@@ -31,7 +31,6 @@ import brave.http.HttpClientParser;
 import brave.http.HttpSampler;
 import brave.http.HttpServerParser;
 import brave.http.HttpTracing;
-import brave.jaxrs2.TracingClientFilter;
 import brave.jersey.server.TracingApplicationEventListener;
 import brave.sampler.Sampler;
 import io.dropwizard.lifecycle.Managed;
@@ -215,8 +214,8 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
 
         final Tracing tracing = Tracing.newBuilder()
                 .currentTraceContext(MDCCurrentTraceContext.create())
-                .endpoint(endpoint).spanReporter(reporter)
-                .sampler(getSampler()).traceId128Bit(traceId128Bit).build();
+                .endpoint(endpoint).spanReporter(reporter).sampler(getSampler())
+                .traceId128Bit(traceId128Bit).build();
 
         final HttpTracing httpTracing = HttpTracing.newBuilder(tracing)
                 .clientParser(clientParser).clientSampler(clientSampler)
@@ -224,8 +223,8 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
                 .build();
 
         // Register the tracing feature for client and server requests
-        environment.jersey().register(TracingClientFilter.create(httpTracing));
-        environment.jersey().register(TracingApplicationEventListener.create(httpTracing));
+        environment.jersey()
+                .register(TracingApplicationEventListener.create(httpTracing));
         environment.lifecycle().manage(new Managed() {
             @Override
             public void start() throws Exception {
