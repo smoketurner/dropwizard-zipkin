@@ -32,11 +32,13 @@ import zipkin2.reporter.AsyncReporter;
 import zipkin2.reporter.ReporterMetrics;
 import zipkin2.reporter.urlconnection.URLConnectionSender;
 
+import static zipkin2.reporter.urlconnection.URLConnectionSender.newBuilder;
+
 @JsonTypeName("http")
 public class HttpZipkinFactory extends AbstractZipkinFactory {
 
     private static final Logger LOGGER = LoggerFactory
-            .getLogger(HttpZipkinFactory.class);
+        .getLogger(HttpZipkinFactory.class);
 
     @NotEmpty
     private String baseUrl = "http://127.0.0.1:9411/";
@@ -49,6 +51,30 @@ public class HttpZipkinFactory extends AbstractZipkinFactory {
     @JsonProperty
     public void setBaseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
+    }
+
+    private int connectTimeout = 10000;
+
+    @JsonProperty
+    public int getConnectTimeout() {
+        return connectTimeout;
+    }
+
+    @JsonProperty
+    public void setConnectTimeout(int connectTimeout) {
+        this.connectTimeout = connectTimeout;
+    }
+
+    private int readTimeout = 60000;
+
+    @JsonProperty
+    public int getReadTimeout() {
+        return readTimeout;
+    }
+
+    @JsonProperty
+    public void setReadTimeout(int readTimeout) {
+        this.readTimeout = readTimeout;
     }
 
     /**
@@ -66,13 +92,16 @@ public class HttpZipkinFactory extends AbstractZipkinFactory {
         }
 
         final ReporterMetrics metricsHandler = new DropwizardReporterMetrics(
-                environment.metrics());
+            environment.metrics());
 
-        final URLConnectionSender sender = URLConnectionSender
-                .create(URI.create(baseUrl).resolve("api/v2/spans").toString());
+        final URLConnectionSender sender = newBuilder()
+            .endpoint(URI.create(baseUrl).resolve("api/v2/spans").toString())
+            .readTimeout(readTimeout)
+            .connectTimeout(connectTimeout)
+            .build();
 
         final AsyncReporter<Span> reporter = AsyncReporter.builder(sender)
-                .metrics(metricsHandler).build();
+            .metrics(metricsHandler).build();
 
         environment.lifecycle().manage(new ReporterManager(reporter, sender));
 
