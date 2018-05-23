@@ -38,7 +38,7 @@ import static zipkin2.reporter.urlconnection.URLConnectionSender.newBuilder;
 public class HttpZipkinFactory extends AbstractZipkinFactory {
 
     private static final Logger LOGGER = LoggerFactory
-        .getLogger(HttpZipkinFactory.class);
+            .getLogger(HttpZipkinFactory.class);
 
     @NotEmpty
     private String baseUrl = "http://127.0.0.1:9411/";
@@ -92,7 +92,7 @@ public class HttpZipkinFactory extends AbstractZipkinFactory {
         }
 
         final ReporterMetrics metricsHandler = new DropwizardReporterMetrics(
-            environment.metrics());
+                environment.metrics());
 
         final URLConnectionSender sender = newBuilder()
             .endpoint(URI.create(baseUrl).resolve("api/v2/spans").toString())
@@ -101,7 +101,7 @@ public class HttpZipkinFactory extends AbstractZipkinFactory {
             .build();
 
         final AsyncReporter<Span> reporter = AsyncReporter.builder(sender)
-            .metrics(metricsHandler).build();
+                .metrics(metricsHandler).build();
 
         environment.lifecycle().manage(new ReporterManager(reporter, sender));
 
