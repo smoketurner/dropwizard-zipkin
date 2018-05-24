@@ -6,6 +6,8 @@ zipkin:
   baseUrl: http://127.0.0.1:9411/
   serviceHost: 127.0.0.1
   servicePort: 8080
+  connectTimeout: 10000
+  readTimeout: 60000
 
 zipkinClient:
   serviceName: hello-world
