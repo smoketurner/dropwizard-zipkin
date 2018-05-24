@@ -53,27 +53,17 @@ public class HttpZipkinFactory extends AbstractZipkinFactory {
         this.baseUrl = baseUrl;
     }
 
-    private int connectTimeout = 10000;
+    private Integer connectTimeout;
 
     @JsonProperty
-    public int getConnectTimeout() {
-        return connectTimeout;
-    }
-
-    @JsonProperty
-    public void setConnectTimeout(int connectTimeout) {
+    public void setConnectTimeout(Integer connectTimeout) {
         this.connectTimeout = connectTimeout;
     }
 
-    private int readTimeout = 60000;
+    private Integer readTimeout;
 
     @JsonProperty
-    public int getReadTimeout() {
-        return readTimeout;
-    }
-
-    @JsonProperty
-    public void setReadTimeout(int readTimeout) {
+    public void setReadTimeout(Integer readTimeout) {
         this.readTimeout = readTimeout;
     }
 
@@ -94,11 +84,10 @@ public class HttpZipkinFactory extends AbstractZipkinFactory {
         final ReporterMetrics metricsHandler = new DropwizardReporterMetrics(
                 environment.metrics());
 
-        final URLConnectionSender sender = newBuilder()
-            .endpoint(URI.create(baseUrl).resolve("api/v2/spans").toString())
-            .readTimeout(readTimeout)
-            .connectTimeout(connectTimeout)
-            .build();
+        URLConnectionSender.Builder builder = newBuilder().endpoint(URI.create(baseUrl).resolve("api/v2/spans").toString());
+        if (readTimeout != null) builder.readTimeout(readTimeout);
+        if (connectTimeout != null) builder.connectTimeout(connectTimeout);
+        final URLConnectionSender sender = builder.build();
 
         final AsyncReporter<Span> reporter = AsyncReporter.builder(sender)
                 .metrics(metricsHandler).build();
