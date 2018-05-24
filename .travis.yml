@@ -19,7 +19,11 @@ matrix:
           packages:
             - oracle-java8-installer
     - os: linux
-      jdk: openjdk10
+      jdk: oraclejdk10
+      addons:
+        apt:
+          packages:
+            - oracle-java10-installer
 
 env:
   global:
