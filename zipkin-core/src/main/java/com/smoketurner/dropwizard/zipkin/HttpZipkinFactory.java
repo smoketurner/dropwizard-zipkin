@@ -18,6 +18,9 @@ package com.smoketurner.dropwizard.zipkin;
 import java.net.URI;
 import java.util.Optional;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +56,7 @@ public class HttpZipkinFactory extends AbstractZipkinFactory {
         this.baseUrl = baseUrl;
     }
 
+    @Nullable
     private Integer connectTimeout;
 
     @JsonProperty
@@ -60,6 +64,7 @@ public class HttpZipkinFactory extends AbstractZipkinFactory {
         this.connectTimeout = connectTimeout;
     }
 
+    @Nullable
     private Integer readTimeout;
 
     @JsonProperty
