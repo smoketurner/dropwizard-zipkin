@@ -70,6 +70,10 @@ zipkin:
   collector: http
   # If using the http collector, provide the baseUrl
   baseUrl: http://127.0.0.1:9411/
+  # If using the http collector, milliseconds before timing out when connecting (defaults to null)
+  connectTimout: 10000
+  # If using the http collector, milliseconds before timing out when reading the response (defaults to null)
+  readTimeout: 60000
   # If using the kafka collector, provide the Kafka bootstrap servers
   bootstrapServers: 127.0.0.1:9092;10.0.1.1:9092
 ```

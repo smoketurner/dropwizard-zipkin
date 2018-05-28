@@ -18,6 +18,9 @@ package com.smoketurner.dropwizard.zipkin;
 import java.net.URI;
 import java.util.Optional;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import io.dropwizard.util.Duration;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +34,8 @@ import zipkin2.Span;
 import zipkin2.reporter.AsyncReporter;
 import zipkin2.reporter.ReporterMetrics;
 import zipkin2.reporter.urlconnection.URLConnectionSender;
+
+import static zipkin2.reporter.urlconnection.URLConnectionSender.newBuilder;
 
 @JsonTypeName("http")
 public class HttpZipkinFactory extends AbstractZipkinFactory {
@@ -51,6 +56,22 @@ public class HttpZipkinFactory extends AbstractZipkinFactory {
         this.baseUrl = baseUrl;
     }
 
+    @Nullable
+    private Duration connectTimeout;
+
+    @JsonProperty
+    public void setConnectTimeout(Duration connectTimeout) {
+        this.connectTimeout = connectTimeout;
+    }
+
+    @Nullable
+    private Duration readTimeout;
+
+    @JsonProperty
+    public void setReadTimeout(Duration readTimeout) {
+        this.readTimeout = readTimeout;
+    }
+
     /**
      * Build a new {@link HttpTracing} instance for interfacing with Zipkin
      *
@@ -68,8 +89,10 @@ public class HttpZipkinFactory extends AbstractZipkinFactory {
         final ReporterMetrics metricsHandler = new DropwizardReporterMetrics(
                 environment.metrics());
 
-        final URLConnectionSender sender = URLConnectionSender
-                .create(URI.create(baseUrl).resolve("api/v2/spans").toString());
+        URLConnectionSender.Builder builder = newBuilder().endpoint(URI.create(baseUrl).resolve("api/v2/spans").toString());
+        if (readTimeout != null) builder.readTimeout((int)readTimeout.toMilliseconds());
+        if (connectTimeout != null) builder.connectTimeout((int)connectTimeout.toMilliseconds());
+        final URLConnectionSender sender = builder.build();
 
         final AsyncReporter<Span> reporter = AsyncReporter.builder(sender)
                 .metrics(metricsHandler).build();
