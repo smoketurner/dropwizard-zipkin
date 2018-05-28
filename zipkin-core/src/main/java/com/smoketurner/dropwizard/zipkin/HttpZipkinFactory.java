@@ -20,7 +20,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import io.dropwizard.util.Duration;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,18 +57,18 @@ public class HttpZipkinFactory extends AbstractZipkinFactory {
     }
 
     @Nullable
-    private Integer connectTimeout;
+    private Duration connectTimeout;
 
     @JsonProperty
-    public void setConnectTimeout(Integer connectTimeout) {
+    public void setConnectTimeout(Duration connectTimeout) {
         this.connectTimeout = connectTimeout;
     }
 
     @Nullable
-    private Integer readTimeout;
+    private Duration readTimeout;
 
     @JsonProperty
-    public void setReadTimeout(Integer readTimeout) {
+    public void setReadTimeout(Duration readTimeout) {
         this.readTimeout = readTimeout;
     }
 
@@ -90,8 +90,8 @@ public class HttpZipkinFactory extends AbstractZipkinFactory {
                 environment.metrics());
 
         URLConnectionSender.Builder builder = newBuilder().endpoint(URI.create(baseUrl).resolve("api/v2/spans").toString());
-        if (readTimeout != null) builder.readTimeout(readTimeout);
-        if (connectTimeout != null) builder.connectTimeout(connectTimeout);
+        if (readTimeout != null) builder.readTimeout((int)readTimeout.toMilliseconds());
+        if (connectTimeout != null) builder.connectTimeout((int)connectTimeout.toMilliseconds());
         final URLConnectionSender sender = builder.build();
 
         final AsyncReporter<Span> reporter = AsyncReporter.builder(sender)
