@@ -17,10 +17,9 @@ package com.smoketurner.dropwizard.zipkin;
 
 import java.net.URI;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import io.dropwizard.util.Duration;
+import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,12 +29,12 @@ import com.smoketurner.dropwizard.zipkin.managed.ReporterManager;
 import com.smoketurner.dropwizard.zipkin.metrics.DropwizardReporterMetrics;
 import brave.http.HttpTracing;
 import io.dropwizard.setup.Environment;
+import io.dropwizard.util.Duration;
+import io.dropwizard.validation.MinDuration;
 import zipkin2.Span;
 import zipkin2.reporter.AsyncReporter;
 import zipkin2.reporter.ReporterMetrics;
 import zipkin2.reporter.urlconnection.URLConnectionSender;
-
-import static zipkin2.reporter.urlconnection.URLConnectionSender.newBuilder;
 
 @JsonTypeName("http")
 public class HttpZipkinFactory extends AbstractZipkinFactory {
@@ -45,6 +44,14 @@ public class HttpZipkinFactory extends AbstractZipkinFactory {
 
     @NotEmpty
     private String baseUrl = "http://127.0.0.1:9411/";
+
+    @NotNull
+    @MinDuration(value = 0, unit = TimeUnit.MILLISECONDS)
+    private Duration connectTimeout = Duration.seconds(10);
+
+    @NotNull
+    @MinDuration(value = 0, unit = TimeUnit.MILLISECONDS)
+    private Duration readTimeout = Duration.seconds(60);
 
     @JsonProperty
     public String getBaseUrl() {
@@ -56,16 +63,10 @@ public class HttpZipkinFactory extends AbstractZipkinFactory {
         this.baseUrl = baseUrl;
     }
 
-    @Nullable
-    private Duration connectTimeout;
-
     @JsonProperty
     public void setConnectTimeout(Duration connectTimeout) {
         this.connectTimeout = connectTimeout;
     }
-
-    @Nullable
-    private Duration readTimeout;
 
     @JsonProperty
     public void setReadTimeout(Duration readTimeout) {
@@ -89,10 +90,15 @@ public class HttpZipkinFactory extends AbstractZipkinFactory {
         final ReporterMetrics metricsHandler = new DropwizardReporterMetrics(
                 environment.metrics());
 
-        URLConnectionSender.Builder builder = newBuilder().endpoint(URI.create(baseUrl).resolve("api/v2/spans").toString());
-        if (readTimeout != null) builder.readTimeout((int)readTimeout.toMilliseconds());
-        if (connectTimeout != null) builder.connectTimeout((int)connectTimeout.toMilliseconds());
-        final URLConnectionSender sender = builder.build();
+        final String endpoint = URI.create(baseUrl).resolve("api/v2/spans")
+                .toString();
+
+        final URLConnectionSender sender = URLConnectionSender.newBuilder()
+                .endpoint(endpoint)
+                .readTimeout(Math.toIntExact(readTimeout.toMilliseconds()))
+                .connectTimeout(
+                        Math.toIntExact(connectTimeout.toMilliseconds()))
+                .build();
 
         final AsyncReporter<Span> reporter = AsyncReporter.builder(sender)
                 .metrics(metricsHandler).build();
