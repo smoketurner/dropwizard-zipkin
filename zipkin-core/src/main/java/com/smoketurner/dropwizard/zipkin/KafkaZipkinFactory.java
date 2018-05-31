@@ -45,7 +45,7 @@ public class KafkaZipkinFactory extends AbstractZipkinFactory {
     @NotEmpty
     private String topic = "zipkin";
 
-    private Map<String, String> moreKafkaConfigs = new LinkedHashMap<>();
+    private Map<String, String> overrides = new LinkedHashMap<>();
 
     @JsonProperty
     public String getBootstrapServers() {
@@ -68,13 +68,13 @@ public class KafkaZipkinFactory extends AbstractZipkinFactory {
     }
 
     @JsonProperty
-    public Map<String, String> getMoreKafkaConfigs() {
-        return moreKafkaConfigs;
+    public Map<String, String> getOverrides() {
+        return overrides;
     }
 
     @JsonProperty
-    public void setMoreKafkaConfigs(Map<String, String> moreKafkaConfigs) {
-        this.moreKafkaConfigs = moreKafkaConfigs;
+    public void setOverrides(Map<String, String> overrides) {
+        this.overrides = overrides;
     }
 
     /**
@@ -95,7 +95,7 @@ public class KafkaZipkinFactory extends AbstractZipkinFactory {
                 environment.metrics());
 
         final KafkaSender sender = KafkaSender.newBuilder()
-                .bootstrapServers(bootstrapServers).topic(topic).overrides(moreKafkaConfigs).build();
+                .bootstrapServers(bootstrapServers).topic(topic).overrides(overrides).build();
 
         final AsyncReporter<Span> reporter = AsyncReporter.builder(sender)
                 .metrics(metricsHandler).build();
