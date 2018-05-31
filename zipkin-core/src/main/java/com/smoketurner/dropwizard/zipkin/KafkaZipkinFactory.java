@@ -15,6 +15,8 @@
  */
 package com.smoketurner.dropwizard.zipkin;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -43,6 +45,8 @@ public class KafkaZipkinFactory extends AbstractZipkinFactory {
     @NotEmpty
     private String topic = "zipkin";
 
+    private Map<String, String> overrides = new LinkedHashMap<>();
+
     @JsonProperty
     public String getBootstrapServers() {
         return bootstrapServers;
@@ -63,6 +67,16 @@ public class KafkaZipkinFactory extends AbstractZipkinFactory {
         this.topic = topic;
     }
 
+    @JsonProperty
+    public Map<String, String> getOverrides() {
+        return overrides;
+    }
+
+    @JsonProperty
+    public void setOverrides(Map<String, String> overrides) {
+        this.overrides = overrides;
+    }
+
     /**
      * Build a new {@link HttpTracing} instance for interfacing with Zipkin
      *
@@ -81,7 +95,7 @@ public class KafkaZipkinFactory extends AbstractZipkinFactory {
                 environment.metrics());
 
         final KafkaSender sender = KafkaSender.newBuilder()
-                .bootstrapServers(bootstrapServers).topic(topic).build();
+                .bootstrapServers(bootstrapServers).topic(topic).overrides(overrides).build();
 
         final AsyncReporter<Span> reporter = AsyncReporter.builder(sender)
                 .metrics(metricsHandler).build();
