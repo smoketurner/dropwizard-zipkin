@@ -4,9 +4,6 @@ language: java
 jdk:
   - openjdk8
   - oraclejdk8
-  - openjdk9
-  - openjdk10
-  - openjdk11
 before_install:
   - ulimit -c unlimited -S
   - mvn -N io.takari:maven:wrapper
