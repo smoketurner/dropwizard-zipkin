@@ -1,11 +1,11 @@
-/**
- * Copyright 2018 Smoke Turner, LLC.
+/*
+ * Copyright © 2018 Smoke Turner, LLC (contact@smoketurner.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,36 +15,34 @@
  */
 package com.smoketurner.dropwizard.zipkin;
 
+import brave.http.HttpTracing;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import io.dropwizard.setup.Environment;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.fasterxml.jackson.annotation.JsonTypeName;
-import brave.http.HttpTracing;
-import io.dropwizard.setup.Environment;
 import zipkin2.reporter.Reporter;
 
 @JsonTypeName("empty")
 public class EmptyZipkinFactory extends AbstractZipkinFactory {
 
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(EmptyZipkinFactory.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(EmptyZipkinFactory.class);
 
-    /**
-     * Build a new {@link HttpTracing} instance for interfacing with Zipkin
-     *
-     * @param environment
-     *            Environment
-     * @return HttpTracing instance
-     */
-    @Override
-    public Optional<HttpTracing> build(@Nonnull final Environment environment) {
-        if (!isEnabled()) {
-            LOGGER.warn("Zipkin tracing is disabled");
-            return Optional.empty();
-        }
-
-        LOGGER.info("Dropping all collected spans");
-        return buildTracing(environment, Reporter.NOOP);
+  /**
+   * Build a new {@link HttpTracing} instance for interfacing with Zipkin
+   *
+   * @param environment Environment
+   * @return HttpTracing instance
+   */
+  @Override
+  public Optional<HttpTracing> build(@Nonnull final Environment environment) {
+    if (!isEnabled()) {
+      LOGGER.warn("Zipkin tracing is disabled");
+      return Optional.empty();
     }
+
+    LOGGER.info("Dropping all collected spans");
+    return buildTracing(environment, Reporter.NOOP);
+  }
 }
