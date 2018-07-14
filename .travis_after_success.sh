@@ -5,9 +5,6 @@ if [[ "${TRAVIS_JDK_VERSION}" != "oraclejdk8" ]]; then
     exit
 fi
 
-# disable code coverage
-# ./mvnw -B cobertura:cobertura coveralls:report
-
 if [[ -n ${TRAVIS_TAG} ]]; then
     echo "Skipping deployment for tag \"${TRAVIS_TAG}\""
     exit
