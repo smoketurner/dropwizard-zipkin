@@ -16,12 +16,13 @@
 package com.smoketurner.dropwizard.zipkin;
 
 import brave.Tracing;
-import brave.context.slf4j.MDCCurrentTraceContext;
+import brave.context.slf4j.MDCScopeDecorator;
 import brave.http.HttpClientParser;
 import brave.http.HttpSampler;
 import brave.http.HttpServerParser;
 import brave.http.HttpTracing;
 import brave.jersey.server.TracingApplicationEventListener;
+import brave.propagation.ThreadLocalCurrentTraceContext;
 import brave.sampler.Sampler;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -29,14 +30,13 @@ import io.dropwizard.lifecycle.Managed;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.validation.PortRange;
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import zipkin2.Endpoint;
 import zipkin2.Span;
 import zipkin2.reporter.Reporter;
 
@@ -196,19 +196,21 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
    * @return HttpTracing instance
    */
   protected Optional<HttpTracing> buildTracing(
-      @Nonnull final Environment environment, @Nonnull final Reporter<Span> reporter) {
+      @NotNull final Environment environment, @NotNull final Reporter<Span> reporter) {
 
     LOGGER.info(
         "Registering Zipkin service ({}) at <{}:{}>", serviceName, serviceHost, servicePort);
 
-    final Endpoint endpoint =
-        Endpoint.newBuilder().ip(serviceHost).port(servicePort).serviceName(serviceName).build();
-
     final Tracing tracing =
         Tracing.newBuilder()
-            .currentTraceContext(MDCCurrentTraceContext.create())
-            .endpoint(endpoint)
+            .currentTraceContext(
+                ThreadLocalCurrentTraceContext.newBuilder()
+                    .addScopeDecorator(MDCScopeDecorator.create())
+                    .build())
+            .localIp(serviceHost)
+            .localPort(servicePort)
             .spanReporter(reporter)
+            .localServiceName(serviceName)
             .sampler(getSampler())
             .traceId128Bit(traceId128Bit)
             .build();

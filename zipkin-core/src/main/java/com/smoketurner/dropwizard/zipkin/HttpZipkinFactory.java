@@ -15,22 +15,21 @@
  */
 package com.smoketurner.dropwizard.zipkin;
 
-import brave.http.HttpTracing;
+import java.net.URI;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import org.hibernate.validator.constraints.NotEmpty;
+import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.smoketurner.dropwizard.zipkin.managed.ReporterManager;
 import com.smoketurner.dropwizard.zipkin.metrics.DropwizardReporterMetrics;
+import brave.http.HttpTracing;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.util.Duration;
 import io.dropwizard.validation.MinDuration;
-import java.net.URI;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
-import javax.annotation.Nonnull;
-import javax.validation.constraints.NotNull;
-import org.hibernate.validator.constraints.NotEmpty;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import zipkin2.Span;
 import zipkin2.reporter.AsyncReporter;
 import zipkin2.reporter.ReporterMetrics;
@@ -78,7 +77,7 @@ public class HttpZipkinFactory extends AbstractZipkinFactory {
    * @return HttpTracing instance
    */
   @Override
-  public Optional<HttpTracing> build(@Nonnull final Environment environment) {
+  public Optional<HttpTracing> build(@NotNull final Environment environment) {
     if (!isEnabled()) {
       LOGGER.warn("Zipkin tracing is disabled");
       return Optional.empty();

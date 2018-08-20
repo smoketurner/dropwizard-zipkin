@@ -25,7 +25,6 @@ import io.dropwizard.util.Duration;
 import io.dropwizard.validation.MinDuration;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
@@ -121,7 +120,7 @@ public class RabbitMQZipkinFactory extends AbstractZipkinFactory {
    * @return Brave instance
    */
   @Override
-  public Optional<HttpTracing> build(@Nonnull final Environment environment) {
+  public Optional<HttpTracing> build(@NotNull final Environment environment) {
     if (!isEnabled()) {
       LOGGER.warn("Zipkin tracing is disabled");
       return Optional.empty();

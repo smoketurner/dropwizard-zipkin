@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.dropwizard.jackson.Discoverable;
 import io.dropwizard.setup.Environment;
 import java.util.Optional;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /** A factory for building {@link HttpTracing} instances for Dropwizard applications. */
 @JsonTypeInfo(

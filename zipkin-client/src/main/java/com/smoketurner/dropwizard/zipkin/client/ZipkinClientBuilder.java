@@ -20,8 +20,8 @@ import brave.jaxrs2.TracingClientFilter;
 import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.setup.Environment;
 import java.util.Objects;
-import javax.annotation.Nonnull;
 import javax.ws.rs.client.Client;
+import org.jetbrains.annotations.NotNull;
 
 public class ZipkinClientBuilder {
   private final Environment environment;
@@ -34,7 +34,7 @@ public class ZipkinClientBuilder {
    * @param tracing HttpTracing instance
    */
   public ZipkinClientBuilder(
-      @Nonnull final Environment environment, @Nonnull final HttpTracing tracing) {
+      @NotNull final Environment environment, @NotNull final HttpTracing tracing) {
     this.environment = Objects.requireNonNull(environment);
     this.tracing = Objects.requireNonNull(tracing);
   }
@@ -45,7 +45,7 @@ public class ZipkinClientBuilder {
    * @param configuration Configuration to use for the client
    * @return new Jersey Client
    */
-  public Client build(@Nonnull final ZipkinClientConfiguration configuration) {
+  public Client build(@NotNull final ZipkinClientConfiguration configuration) {
     final Client client =
         new JerseyClientBuilder(environment)
             .using(configuration)
@@ -59,7 +59,7 @@ public class ZipkinClientBuilder {
    * @param client Jersey client
    * @return an instrumented Jersey client
    */
-  public Client build(@Nonnull final Client client) {
+  public Client build(@NotNull final Client client) {
     client.register(TracingClientFilter.create(tracing));
     return client;
   }

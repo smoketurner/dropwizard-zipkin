@@ -19,7 +19,7 @@ import brave.http.HttpTracing;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.dropwizard.setup.Environment;
 import java.util.Optional;
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import zipkin2.reporter.Reporter;
@@ -36,7 +36,7 @@ public class EmptyZipkinFactory extends AbstractZipkinFactory {
    * @return HttpTracing instance
    */
   @Override
-  public Optional<HttpTracing> build(@Nonnull final Environment environment) {
+  public Optional<HttpTracing> build(@NotNull final Environment environment) {
     if (!isEnabled()) {
       LOGGER.warn("Zipkin tracing is disabled");
       return Optional.empty();
