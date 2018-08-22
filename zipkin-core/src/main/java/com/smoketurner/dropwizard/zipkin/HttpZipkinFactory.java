@@ -15,6 +15,14 @@
  */
 package com.smoketurner.dropwizard.zipkin;
 
+import brave.http.HttpTracing;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.smoketurner.dropwizard.zipkin.managed.ReporterManager;
+import com.smoketurner.dropwizard.zipkin.metrics.DropwizardReporterMetrics;
+import io.dropwizard.setup.Environment;
+import io.dropwizard.util.Duration;
+import io.dropwizard.validation.MinDuration;
 import java.net.URI;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -22,14 +30,6 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.smoketurner.dropwizard.zipkin.managed.ReporterManager;
-import com.smoketurner.dropwizard.zipkin.metrics.DropwizardReporterMetrics;
-import brave.http.HttpTracing;
-import io.dropwizard.setup.Environment;
-import io.dropwizard.util.Duration;
-import io.dropwizard.validation.MinDuration;
 import zipkin2.Span;
 import zipkin2.reporter.AsyncReporter;
 import zipkin2.reporter.ReporterMetrics;
