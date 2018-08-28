@@ -17,7 +17,6 @@ package com.smoketurner.dropwizard.zipkin.managed;
 
 import io.dropwizard.lifecycle.Managed;
 import java.util.Objects;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import zipkin2.CheckResult;
@@ -37,7 +36,7 @@ public class ReporterManager implements Managed {
    * @param reporter Reporter to manage
    * @param sender Sender to manage
    */
-  public ReporterManager(@NotNull final AsyncReporter<?> reporter, @NotNull final Sender sender) {
+  public ReporterManager(final AsyncReporter<?> reporter, final Sender sender) {
     this.reporter = Objects.requireNonNull(reporter);
     this.sender = Objects.requireNonNull(sender);
   }

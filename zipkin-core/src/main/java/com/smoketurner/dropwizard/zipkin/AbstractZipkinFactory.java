@@ -26,6 +26,7 @@ import brave.propagation.ThreadLocalCurrentTraceContext;
 import brave.sampler.Sampler;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dropwizard.lifecycle.Managed;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.validation.PortRange;
@@ -33,8 +34,6 @@ import java.util.Optional;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import zipkin2.Span;
@@ -196,7 +195,7 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
    * @return HttpTracing instance
    */
   protected Optional<HttpTracing> buildTracing(
-      @NotNull final Environment environment, @NotNull final Reporter<Span> reporter) {
+      final Environment environment, final Reporter<Span> reporter) {
 
     LOGGER.info(
         "Registering Zipkin service ({}) at <{}:{}>", serviceName, serviceHost, servicePort);

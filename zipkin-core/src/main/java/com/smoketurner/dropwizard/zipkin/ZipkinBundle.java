@@ -21,7 +21,6 @@ import io.dropwizard.ConfiguredBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import java.util.Objects;
-import org.jetbrains.annotations.NotNull;
 
 public abstract class ZipkinBundle<C extends Configuration>
     implements ConfiguredBundle<C>, ZipkinConfiguration<C> {
@@ -33,7 +32,7 @@ public abstract class ZipkinBundle<C extends Configuration>
    *
    * @param serviceName service name
    */
-  public ZipkinBundle(@NotNull final String serviceName) {
+  public ZipkinBundle(final String serviceName) {
     this.serviceName = Objects.requireNonNull(serviceName);
   }
 

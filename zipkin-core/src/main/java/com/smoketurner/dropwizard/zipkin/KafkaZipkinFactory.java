@@ -25,7 +25,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import zipkin2.Span;
@@ -81,7 +80,7 @@ public class KafkaZipkinFactory extends AbstractZipkinFactory {
    * @return Brave instance
    */
   @Override
-  public Optional<HttpTracing> build(@NotNull final Environment environment) {
+  public Optional<HttpTracing> build(final Environment environment) {
     if (!isEnabled()) {
       LOGGER.warn("Zipkin tracing is disabled");
       return Optional.empty();

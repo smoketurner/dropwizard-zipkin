@@ -26,8 +26,8 @@ import io.dropwizard.validation.MinDuration;
 import java.net.URI;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import zipkin2.Span;
@@ -77,7 +77,7 @@ public class HttpZipkinFactory extends AbstractZipkinFactory {
    * @return HttpTracing instance
    */
   @Override
-  public Optional<HttpTracing> build(@NotNull final Environment environment) {
+  public Optional<HttpTracing> build(final Environment environment) {
     if (!isEnabled()) {
       LOGGER.warn("Zipkin tracing is disabled");
       return Optional.empty();

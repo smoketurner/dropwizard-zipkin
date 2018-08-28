@@ -15,9 +15,8 @@
  */
 package com.smoketurner.dropwizard.zipkin.metrics;
 
-import com.codahale.metrics.MetricRegistry;
 import java.util.Objects;
-import org.jetbrains.annotations.NotNull;
+import com.codahale.metrics.MetricRegistry;
 import zipkin2.reporter.ReporterMetrics;
 
 public class DropwizardReporterMetrics implements ReporterMetrics {
@@ -29,7 +28,7 @@ public class DropwizardReporterMetrics implements ReporterMetrics {
    *
    * @param registry Metric Registry
    */
-  public DropwizardReporterMetrics(@NotNull final MetricRegistry registry) {
+  public DropwizardReporterMetrics(final MetricRegistry registry) {
     this.registry = Objects.requireNonNull(registry);
   }
 
