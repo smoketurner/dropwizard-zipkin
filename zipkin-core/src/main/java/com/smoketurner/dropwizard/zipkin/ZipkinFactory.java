@@ -17,10 +17,10 @@ package com.smoketurner.dropwizard.zipkin;
 
 import brave.http.HttpTracing;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dropwizard.jackson.Discoverable;
 import io.dropwizard.setup.Environment;
 import java.util.Optional;
+import javax.annotation.Nullable;
 
 /** A factory for building {@link HttpTracing} instances for Dropwizard applications. */
 @JsonTypeInfo(
