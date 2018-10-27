@@ -21,7 +21,7 @@
     <parent>
         <groupId>com.smoketurner.dropwizard</groupId>
         <artifactId>dropwizard-pom</artifactId>
-        <version>0.0.14</version>
+        <version>0.0.16</version>
     </parent>
 
     <artifactId>dropwizard-zipkin</artifactId>
@@ -33,7 +33,7 @@
     <url>https://github.com/smoketurner/dropwizard-zipkin</url>
 
     <properties>
-        <brave.version>5.4.2</brave.version>
+        <brave.version>5.5.0</brave.version>
     </properties>
 
     <modules>
