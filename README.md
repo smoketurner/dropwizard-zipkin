@@ -13,7 +13,7 @@ Dependency Info
 <dependency>
     <groupId>com.smoketurner.dropwizard</groupId>
     <artifactId>zipkin-core</artifactId>
-    <version>1.3.7-2</version>
+    <version>1.3.8-1</version>
 </dependency>
 ```
 
@@ -29,7 +29,7 @@ Beginning with v1.2.2-4, if you are using the Kafka sender, you must explicitly 
 
 Usage
 -----
-Add a `ZipkinBundle` to your [Application](https://www.dropwizard.io/1.3.5/dropwizard-core/apidocs/io/dropwizard/Application.html) class.
+Add a `ZipkinBundle` to your [Application](https://www.dropwizard.io/1.3.8/dropwizard-core/apidocs/io/dropwizard/Application.html) class.
 
 ```java
 @Override
@@ -86,7 +86,7 @@ You can execute this application by first starting Zipkin on your local machine 
 
 ```
 mvn clean package
-java -jar zipkin-example/target/zipkin-example-1.3.7-3-SNAPSHOT.jar server zipkin-example/hello-world.yml
+java -jar zipkin-example/target/zipkin-example-1.3.8-2-SNAPSHOT.jar server zipkin-example/hello-world.yml
 ```
 
 This will start the application on port `8080` (admin port `8180`). This application demonstrations the following Zipkin integration points:
