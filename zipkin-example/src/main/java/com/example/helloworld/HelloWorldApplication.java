@@ -30,6 +30,8 @@ import javax.ws.rs.client.Client;
 
 public class HelloWorldApplication extends Application<HelloWorldConfiguration> {
 
+  private ZipkinBundle<HelloWorldConfiguration> zipkinBundle;
+
   public static void main(String[] args) throws Exception {
     new HelloWorldApplication().run(args);
   }
@@ -41,19 +43,20 @@ public class HelloWorldApplication extends Application<HelloWorldConfiguration> 
 
   @Override
   public void initialize(Bootstrap<HelloWorldConfiguration> bootstrap) {
-    bootstrap.addBundle(
+    zipkinBundle =
         new ZipkinBundle<HelloWorldConfiguration>(getName()) {
           @Override
           public ZipkinFactory getZipkinFactory(HelloWorldConfiguration configuration) {
             return configuration.getZipkinFactory();
           }
-        });
+        };
+    bootstrap.addBundle(zipkinBundle);
   }
 
   @Override
   public void run(HelloWorldConfiguration configuration, Environment environment) throws Exception {
 
-    final Optional<HttpTracing> tracing = configuration.getZipkinFactory().build(environment);
+    final Optional<HttpTracing> tracing = zipkinBundle.getHttpTracing();
 
     final Client client;
     if (tracing.isPresent()) {

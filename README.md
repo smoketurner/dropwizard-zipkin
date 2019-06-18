@@ -32,20 +32,21 @@ Usage
 Add a `ZipkinBundle` to your [Application](https://www.dropwizard.io/1.3.9/dropwizard-core/apidocs/io/dropwizard/Application.html) class.
 
 ```java
-@Override
-public void initialize(Bootstrap<MyConfiguration> bootstrap) {
-    // ...
-    bootstrap.addBundle(new ZipkinBundle<MyConfiguration>(getName()) {
-        @Override
-        public ZipkinFactory getZipkinFactory(MyConfiguration configuration) {
-            return configuration.getZipkinFactory();
-        }
-    });
-}
+private ZipkinBundle<HelloWorldConfiguration> zipkinBundle;
 
 @Override
-public void run(MyConfiguration configuration, Environment environment) throws Exception {
-    Optional<HttpTracing> tracing = configuration.getZipkinFactory().build(environment);
+public void initialize(Bootstrap<HelloWorldConfiguration> bootstrap) {
+  zipkinBundle = new ZipkinBundle<HelloWorldConfiguration>(getName()) {
+    @Override
+    public ZipkinFactory getZipkinFactory(HelloWorldConfiguration configuration) {
+      return configuration.getZipkinFactory();
+    }
+  };
+  bootstrap.addBundle(zipkinBundle);
+}
+@Override
+public void run(HelloWorldConfiguration configuration, Environment environment) throws Exception {
+  final Optional<HttpTracing> tracing = zipkinBundle.getHttpTracing();}
 }
 ```
 
