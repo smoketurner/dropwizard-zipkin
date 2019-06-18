@@ -47,7 +47,7 @@ public void initialize(Bootstrap<HelloWorldConfiguration> bootstrap) {
 
 @Override
 public void run(HelloWorldConfiguration configuration, Environment environment) throws Exception {
-  final Optional<HttpTracing> tracing = zipkinBundle.getHttpTracing();}
+  final Optional<HttpTracing> tracing = zipkinBundle.getHttpTracing();
 }
 ```
 
