@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 import zipkin2.Span;
 import zipkin2.reporter.AsyncReporter;
 import zipkin2.reporter.ReporterMetrics;
-import zipkin2.reporter.kafka11.KafkaSender;
+import zipkin2.reporter.kafka.KafkaSender;
 
 @JsonTypeName("kafka")
 public class KafkaZipkinFactory extends AbstractZipkinFactory {

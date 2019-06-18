@@ -15,9 +15,8 @@
  */
 package com.smoketurner.dropwizard.zipkin;
 
-import com.google.common.base.Strings;
-
 import brave.http.HttpTracing;
+import com.google.common.base.Strings;
 import io.dropwizard.Configuration;
 import io.dropwizard.ConfiguredBundle;
 import io.dropwizard.setup.Bootstrap;
