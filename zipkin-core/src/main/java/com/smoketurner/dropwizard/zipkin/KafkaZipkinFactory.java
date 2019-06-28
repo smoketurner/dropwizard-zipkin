@@ -18,8 +18,6 @@ package com.smoketurner.dropwizard.zipkin;
 import brave.http.HttpTracing;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.smoketurner.dropwizard.zipkin.managed.ReporterManager;
-import com.smoketurner.dropwizard.zipkin.metrics.DropwizardReporterMetrics;
 import io.dropwizard.setup.Environment;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -27,13 +25,10 @@ import java.util.Optional;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import zipkin2.Span;
-import zipkin2.reporter.AsyncReporter;
-import zipkin2.reporter.ReporterMetrics;
 import zipkin2.reporter.kafka.KafkaSender;
 
 @JsonTypeName("kafka")
-public class KafkaZipkinFactory extends AbstractZipkinFactory {
+public class KafkaZipkinFactory extends ReportingZipkinFactory {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KafkaZipkinFactory.class);
 
@@ -86,8 +81,6 @@ public class KafkaZipkinFactory extends AbstractZipkinFactory {
       return Optional.empty();
     }
 
-    final ReporterMetrics metricsHandler = new DropwizardReporterMetrics(environment.metrics());
-
     final KafkaSender sender =
         KafkaSender.newBuilder()
             .bootstrapServers(bootstrapServers)
@@ -95,13 +88,8 @@ public class KafkaZipkinFactory extends AbstractZipkinFactory {
             .overrides(overrides)
             .build();
 
-    final AsyncReporter<Span> reporter =
-        AsyncReporter.builder(sender).metrics(metricsHandler).build();
-
-    environment.lifecycle().manage(new ReporterManager(reporter, sender));
-
     LOGGER.info("Sending spans to Kafka topic \"{}\" at: {}", topic, bootstrapServers);
 
-    return buildTracing(environment, reporter);
+    return buildTracing(environment, sender);
   }
 }

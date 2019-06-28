@@ -18,8 +18,6 @@ package com.smoketurner.dropwizard.zipkin;
 import brave.http.HttpTracing;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.smoketurner.dropwizard.zipkin.managed.ReporterManager;
-import com.smoketurner.dropwizard.zipkin.metrics.DropwizardReporterMetrics;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.util.Duration;
 import io.dropwizard.validation.MinDuration;
@@ -29,13 +27,10 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import zipkin2.Span;
-import zipkin2.reporter.AsyncReporter;
-import zipkin2.reporter.ReporterMetrics;
 import zipkin2.reporter.amqp.RabbitMQSender;
 
 @JsonTypeName("amqp")
-public class RabbitMQZipkinFactory extends AbstractZipkinFactory {
+public class RabbitMQZipkinFactory extends ReportingZipkinFactory {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(RabbitMQZipkinFactory.class);
 
@@ -126,8 +121,6 @@ public class RabbitMQZipkinFactory extends AbstractZipkinFactory {
       return Optional.empty();
     }
 
-    final ReporterMetrics metricsHandler = new DropwizardReporterMetrics(environment.metrics());
-
     final RabbitMQSender sender =
         RabbitMQSender.newBuilder()
             .addresses(addresses)
@@ -138,13 +131,8 @@ public class RabbitMQZipkinFactory extends AbstractZipkinFactory {
             .virtualHost(virtualHost)
             .build();
 
-    final AsyncReporter<Span> reporter =
-        AsyncReporter.builder(sender).metrics(metricsHandler).build();
-
-    environment.lifecycle().manage(new ReporterManager(reporter, sender));
-
     LOGGER.info("Sending spans to RabbitMQ queue \"{}\" at: {}", queue, addresses);
 
-    return buildTracing(environment, reporter);
+    return buildTracing(environment, sender);
   }
 }
