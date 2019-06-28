@@ -17,7 +17,11 @@ package com.smoketurner.dropwizard.zipkin;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import io.dropwizard.jackson.DiscoverableSubtypeResolver;
+import io.dropwizard.util.Duration;
+import java.io.IOException;
 import org.junit.Test;
 
 public class HttpZipkinFactoryTest {
@@ -26,5 +30,25 @@ public class HttpZipkinFactoryTest {
   public void isDiscoverable() throws Exception {
     assertThat(new DiscoverableSubtypeResolver().getDiscoveredSubtypes())
         .contains(HttpZipkinFactory.class);
+  }
+
+  @Test
+  public void shouldBeConfigurable() throws IOException {
+    ObjectMapper mapper =
+        new ObjectMapper(new YAMLFactory()).setSubtypeResolver(new DiscoverableSubtypeResolver());
+
+    final ZipkinFactory factory =
+        mapper.readValue(
+            "enabled: true\n"
+                + "collector: http\n"
+                + "baseUrl: http://example.com:1234/zipkin\n"
+                + "connectTimeout: 1d\n"
+                + "readTimeout: 2d\n"
+                + "reportTimeout: 3d\n",
+            ZipkinFactory.class);
+    assertThat(factory).isInstanceOf(HttpZipkinFactory.class);
+    HttpZipkinFactory httpFactory = (HttpZipkinFactory) factory;
+    assertThat(httpFactory.getBaseUrl()).isEqualTo("http://example.com:1234/zipkin");
+    assertThat(httpFactory.getReportTimeout()).isEqualTo(Duration.days(3));
   }
 }

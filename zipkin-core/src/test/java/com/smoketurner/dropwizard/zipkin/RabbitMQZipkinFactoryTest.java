@@ -16,7 +16,6 @@
 package com.smoketurner.dropwizard.zipkin;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.entry;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -25,12 +24,12 @@ import io.dropwizard.util.Duration;
 import java.io.IOException;
 import org.junit.Test;
 
-public class KafkaZipkinFactoryTest {
+public class RabbitMQZipkinFactoryTest {
 
   @Test
   public void isDiscoverable() throws Exception {
     assertThat(new DiscoverableSubtypeResolver().getDiscoveredSubtypes())
-        .contains(KafkaZipkinFactory.class);
+        .contains(RabbitMQZipkinFactory.class);
   }
 
   @Test
@@ -41,18 +40,23 @@ public class KafkaZipkinFactoryTest {
     final ZipkinFactory factory =
         mapper.readValue(
             "enabled: true\n"
-                + "collector: kafka\n"
-                + "bootstrapServers: example.com:1234\n"
-                + "topic: foo\n"
-                + "overrides:\n"
-                + "  acks: all\n"
+                + "collector: amqp\n"
+                + "addresses: example.com:1234\n"
+                + "queue: test\n"
+                + "username: foo\n"
+                + "password: bar\n"
+                + "virtualHost: /test\n"
+                + "connectionTimeout: 1d\n"
                 + "reportTimeout: 3d\n",
             ZipkinFactory.class);
-    assertThat(factory).isInstanceOf(KafkaZipkinFactory.class);
-    KafkaZipkinFactory kafkaFactory = (KafkaZipkinFactory) factory;
-    assertThat(kafkaFactory.getBootstrapServers()).isEqualTo("example.com:1234");
-    assertThat(kafkaFactory.getTopic()).isEqualTo("foo");
-    assertThat(kafkaFactory.getOverrides()).containsExactly(entry("acks", "all"));
+    assertThat(factory).isInstanceOf(RabbitMQZipkinFactory.class);
+    RabbitMQZipkinFactory kafkaFactory = (RabbitMQZipkinFactory) factory;
+    assertThat(kafkaFactory.getAddresses()).isEqualTo("example.com:1234");
+    assertThat(kafkaFactory.getQueue()).isEqualTo("test");
+    assertThat(kafkaFactory.getUsername()).isEqualTo("foo");
+    assertThat(kafkaFactory.getPassword()).isEqualTo("bar");
+    assertThat(kafkaFactory.getVirtualHost()).isEqualTo("/test");
+    assertThat(kafkaFactory.getConnectionTimeout()).isEqualTo(Duration.days(1));
     assertThat(kafkaFactory.getReportTimeout()).isEqualTo(Duration.days(3));
   }
 }
