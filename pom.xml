@@ -33,7 +33,7 @@
     <url>https://github.com/smoketurner/dropwizard-zipkin</url>
 
     <properties>
-        <brave.version>5.6.10</brave.version>
+        <brave.version>5.6.11</brave.version>
     </properties>
 
     <modules>
