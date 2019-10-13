@@ -18,12 +18,14 @@ package com.smoketurner.dropwizard.zipkin;
 import brave.Tracing;
 import brave.context.slf4j.MDCScopeDecorator;
 import brave.http.HttpClientParser;
-import brave.http.HttpSampler;
+import brave.http.HttpRequest;
 import brave.http.HttpServerParser;
 import brave.http.HttpTracing;
 import brave.jersey.server.TracingApplicationEventListener;
 import brave.propagation.ThreadLocalCurrentTraceContext;
 import brave.sampler.Sampler;
+import brave.sampler.SamplerFunction;
+import brave.sampler.SamplerFunctions;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.lifecycle.Managed;
@@ -65,9 +67,9 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
   @Nullable private Sampler sampler = null;
 
   private HttpClientParser clientParser = new HttpClientParser();
-  private HttpSampler clientSampler = HttpSampler.TRACE_ID;
+  private SamplerFunction<HttpRequest> clientSampler = SamplerFunctions.deferDecision();
   private HttpServerParser serverParser = new HttpServerParser();
-  private HttpSampler serverSampler = HttpSampler.TRACE_ID;
+  private SamplerFunction<HttpRequest> serverSampler = SamplerFunctions.deferDecision();
 
   private boolean traceId128Bit = false;
 
@@ -158,12 +160,12 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
   }
 
   @JsonIgnore
-  public HttpSampler getClientSampler() {
+  public SamplerFunction<HttpRequest> getClientSampler() {
     return clientSampler;
   }
 
   @JsonIgnore
-  public void setClientSampler(HttpSampler sampler) {
+  public void setClientSampler(SamplerFunction<HttpRequest> sampler) {
     this.clientSampler = sampler;
   }
 
@@ -178,12 +180,12 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
   }
 
   @JsonIgnore
-  public HttpSampler getServerSampler() {
+  public SamplerFunction<HttpRequest> getServerSampler() {
     return serverSampler;
   }
 
   @JsonIgnore
-  public void setServerSampler(HttpSampler sampler) {
+  public void setServerSampler(SamplerFunction<HttpRequest> sampler) {
     this.serverSampler = sampler;
   }
 
