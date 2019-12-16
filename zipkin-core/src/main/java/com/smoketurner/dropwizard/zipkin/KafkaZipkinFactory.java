@@ -22,7 +22,7 @@ import io.dropwizard.setup.Environment;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
-import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import zipkin2.reporter.kafka.KafkaSender;
