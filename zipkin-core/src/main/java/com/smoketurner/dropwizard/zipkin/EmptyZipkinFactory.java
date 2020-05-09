@@ -15,13 +15,13 @@
  */
 package com.smoketurner.dropwizard.zipkin;
 
+import brave.handler.SpanHandler;
 import brave.http.HttpTracing;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.dropwizard.setup.Environment;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import zipkin2.reporter.Reporter;
 
 @JsonTypeName("empty")
 public class EmptyZipkinFactory extends AbstractZipkinFactory {
@@ -42,6 +42,6 @@ public class EmptyZipkinFactory extends AbstractZipkinFactory {
     }
 
     LOGGER.info("Dropping all collected spans");
-    return buildTracing(environment, Reporter.NOOP);
+    return buildTracing(environment, SpanHandler.NOOP);
   }
 }

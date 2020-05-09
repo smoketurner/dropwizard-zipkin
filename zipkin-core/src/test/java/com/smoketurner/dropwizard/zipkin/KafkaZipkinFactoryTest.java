@@ -28,7 +28,7 @@ import org.junit.Test;
 public class KafkaZipkinFactoryTest {
 
   @Test
-  public void isDiscoverable() throws Exception {
+  public void isDiscoverable() {
     assertThat(new DiscoverableSubtypeResolver().getDiscoveredSubtypes())
         .contains(KafkaZipkinFactory.class);
   }

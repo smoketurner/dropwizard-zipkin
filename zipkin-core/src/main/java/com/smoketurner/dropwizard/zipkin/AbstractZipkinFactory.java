@@ -17,15 +17,17 @@ package com.smoketurner.dropwizard.zipkin;
 
 import brave.Tracing;
 import brave.context.slf4j.MDCScopeDecorator;
+import brave.handler.SpanHandler;
 import brave.http.HttpClientParser;
 import brave.http.HttpRequest;
+import brave.http.HttpRequestParser;
+import brave.http.HttpResponseParser;
 import brave.http.HttpServerParser;
 import brave.http.HttpTracing;
 import brave.jersey.server.TracingApplicationEventListener;
 import brave.propagation.ThreadLocalCurrentTraceContext;
 import brave.sampler.Sampler;
 import brave.sampler.SamplerFunction;
-import brave.sampler.SamplerFunctions;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.lifecycle.Managed;
@@ -38,8 +40,6 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import zipkin2.Span;
-import zipkin2.reporter.Reporter;
 
 /**
  * @see ConsoleZipkinFactory
@@ -66,10 +66,14 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
 
   @Nullable private Sampler sampler = null;
 
-  private HttpClientParser clientParser = new HttpClientParser();
-  private SamplerFunction<HttpRequest> clientSampler = SamplerFunctions.deferDecision();
-  private HttpServerParser serverParser = new HttpServerParser();
-  private SamplerFunction<HttpRequest> serverSampler = SamplerFunctions.deferDecision();
+  @Deprecated @Nullable private HttpClientParser clientParser;
+  @Nullable private HttpRequestParser clientRequestParser;
+  @Nullable private HttpResponseParser clientResponseParser;
+  @Nullable private SamplerFunction<HttpRequest> clientSampler;
+  @Deprecated @Nullable private HttpServerParser serverParser;
+  @Nullable private HttpRequestParser serverRequestParser;
+  @Nullable private HttpResponseParser serverResponseParser;
+  @Nullable private SamplerFunction<HttpRequest> serverSampler;
 
   private boolean traceId128Bit = false;
 
@@ -149,14 +153,36 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
     this.traceId128Bit = traceId128Bit;
   }
 
+  @Deprecated
   @JsonIgnore
   public HttpClientParser getClientParser() {
     return clientParser;
   }
 
+  @Deprecated
   @JsonIgnore
   public void setClientParser(HttpClientParser parser) {
     this.clientParser = parser;
+  }
+
+  @JsonIgnore
+  public HttpRequestParser getClientRequestParser() {
+    return clientRequestParser;
+  }
+
+  @JsonIgnore
+  public void setClientRequestParser(HttpRequestParser requestParser) {
+    this.clientRequestParser = requestParser;
+  }
+
+  @JsonIgnore
+  public HttpResponseParser getClientResponseParser() {
+    return clientResponseParser;
+  }
+
+  @JsonIgnore
+  public void setClientResponseParser(HttpResponseParser responseParser) {
+    this.clientResponseParser = responseParser;
   }
 
   @JsonIgnore
@@ -169,14 +195,36 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
     this.clientSampler = sampler;
   }
 
+  @Deprecated
   @JsonIgnore
   public HttpServerParser getServerParser() {
     return serverParser;
   }
 
+  @Deprecated
   @JsonIgnore
   public void setServerParser(HttpServerParser parser) {
     this.serverParser = parser;
+  }
+
+  @JsonIgnore
+  public HttpRequestParser getServerRequestParser() {
+    return serverRequestParser;
+  }
+
+  @JsonIgnore
+  public void setServerRequestParser(HttpRequestParser requestParser) {
+    this.serverRequestParser = requestParser;
+  }
+
+  @JsonIgnore
+  public HttpResponseParser getServerResponseParser() {
+    return serverResponseParser;
+  }
+
+  @JsonIgnore
+  public void setServerResponseParser(HttpResponseParser responseParser) {
+    this.serverResponseParser = responseParser;
   }
 
   @JsonIgnore
@@ -197,7 +245,7 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
    * @return HttpTracing instance
    */
   protected Optional<HttpTracing> buildTracing(
-      final Environment environment, final Reporter<Span> reporter) {
+      final Environment environment, final SpanHandler reporter) {
 
     LOGGER.info(
         "Registering Zipkin service ({}) at <{}:{}>", serviceName, serviceHost, servicePort);
@@ -206,23 +254,27 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
         Tracing.newBuilder()
             .currentTraceContext(
                 ThreadLocalCurrentTraceContext.newBuilder()
-                    .addScopeDecorator(MDCScopeDecorator.create())
+                    .addScopeDecorator(MDCScopeDecorator.get())
                     .build())
             .localIp(serviceHost)
             .localPort(servicePort)
-            .spanReporter(reporter)
+            .addSpanHandler(reporter)
             .localServiceName(serviceName)
             .sampler(getSampler())
             .traceId128Bit(traceId128Bit)
             .build();
 
-    final HttpTracing httpTracing =
-        HttpTracing.newBuilder(tracing)
-            .clientParser(clientParser)
-            .clientSampler(clientSampler)
-            .serverParser(serverParser)
-            .serverSampler(serverSampler)
-            .build();
+    final HttpTracing.Builder httpTracingBuilder = HttpTracing.newBuilder(tracing);
+    if (clientParser != null) httpTracingBuilder.clientParser(clientParser);
+    if (clientRequestParser != null) httpTracingBuilder.clientRequestParser(clientRequestParser);
+    if (clientResponseParser != null) httpTracingBuilder.clientResponseParser(clientResponseParser);
+    if (serverRequestParser != null) httpTracingBuilder.serverRequestParser(serverRequestParser);
+    if (serverResponseParser != null) httpTracingBuilder.serverResponseParser(serverResponseParser);
+    if (serverParser != null) httpTracingBuilder.serverParser(serverParser);
+    if (clientSampler != null) httpTracingBuilder.clientSampler(clientSampler);
+    if (serverSampler != null) httpTracingBuilder.serverSampler(serverSampler);
+
+    final HttpTracing httpTracing = httpTracingBuilder.build();
 
     // Register the tracing feature for client and server requests
     environment.jersey().register(TracingApplicationEventListener.create(httpTracing));
@@ -231,12 +283,12 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
         .manage(
             new Managed() {
               @Override
-              public void start() throws Exception {
+              public void start() {
                 // nothing to start
               }
 
               @Override
-              public void stop() throws Exception {
+              public void stop() {
                 tracing.close();
               }
             });

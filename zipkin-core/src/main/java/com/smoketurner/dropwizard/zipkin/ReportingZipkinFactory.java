@@ -28,6 +28,7 @@ import javax.validation.constraints.NotNull;
 import zipkin2.Span;
 import zipkin2.reporter.AsyncReporter;
 import zipkin2.reporter.Sender;
+import zipkin2.reporter.brave.ZipkinSpanHandler;
 
 public abstract class ReportingZipkinFactory extends AbstractZipkinFactory {
   @NotNull
@@ -53,6 +54,6 @@ public abstract class ReportingZipkinFactory extends AbstractZipkinFactory {
 
     environment.lifecycle().manage(new ReporterManager(reporter, sender));
 
-    return buildTracing(environment, reporter);
+    return buildTracing(environment, ZipkinSpanHandler.create(reporter));
   }
 }

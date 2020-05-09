@@ -42,7 +42,7 @@ public class ReporterManager implements Managed {
   }
 
   @Override
-  public void start() throws Exception {
+  public void start() {
     final CheckResult result = reporter.check();
     if (!result.ok()) {
       LOGGER.error("Unable to connect to Zipkin destination", result.error());

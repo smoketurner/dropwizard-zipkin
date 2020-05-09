@@ -23,7 +23,7 @@ import org.junit.Test;
 public class EmptyZipkinFactoryTest {
 
   @Test
-  public void isDiscoverable() throws Exception {
+  public void isDiscoverable() {
     assertThat(new DiscoverableSubtypeResolver().getDiscoveredSubtypes())
         .contains(EmptyZipkinFactory.class);
   }

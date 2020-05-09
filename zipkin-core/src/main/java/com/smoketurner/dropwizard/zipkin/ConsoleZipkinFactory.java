@@ -22,6 +22,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import zipkin2.reporter.Reporter;
+import zipkin2.reporter.brave.ZipkinSpanHandler;
 
 @JsonTypeName("console")
 public class ConsoleZipkinFactory extends AbstractZipkinFactory {
@@ -42,6 +43,6 @@ public class ConsoleZipkinFactory extends AbstractZipkinFactory {
     }
 
     LOGGER.info("Sending spans to console");
-    return buildTracing(environment, Reporter.CONSOLE);
+    return buildTracing(environment, ZipkinSpanHandler.create(Reporter.CONSOLE));
   }
 }
