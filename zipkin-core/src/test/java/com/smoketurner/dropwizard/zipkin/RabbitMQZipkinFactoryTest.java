@@ -27,7 +27,7 @@ import org.junit.Test;
 public class RabbitMQZipkinFactoryTest {
 
   @Test
-  public void isDiscoverable() throws Exception {
+  public void isDiscoverable() {
     assertThat(new DiscoverableSubtypeResolver().getDiscoveredSubtypes())
         .contains(RabbitMQZipkinFactory.class);
   }
