@@ -25,7 +25,7 @@
     </parent>
 
     <artifactId>dropwizard-zipkin</artifactId>
-    <version>2.0.12-1</version>
+    <version>2.0.12-2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>dropwizard-zipkin</name>
@@ -46,7 +46,7 @@
         <connection>scm:git:git://github.com/smoketurner/dropwizard-zipkin.git</connection>
         <developerConnection>scm:git:git@github.com:smoketurner/dropwizard-zipkin.git</developerConnection>
         <url>https://github.com/smoketurner/dropwizard-zipkin</url>
-        <tag>v2.0.12-1</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <repositories>
