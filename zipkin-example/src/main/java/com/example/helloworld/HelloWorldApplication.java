@@ -20,7 +20,6 @@ import com.example.helloworld.resources.HelloWorldResource;
 import com.smoketurner.dropwizard.zipkin.ZipkinBundle;
 import com.smoketurner.dropwizard.zipkin.ZipkinFactory;
 import com.smoketurner.dropwizard.zipkin.client.ZipkinClientBuilder;
-import com.smoketurner.dropwizard.zipkin.client.ZipkinClientConfiguration;
 import io.dropwizard.Application;
 import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.setup.Bootstrap;
@@ -47,29 +46,25 @@ public class HelloWorldApplication extends Application<HelloWorldConfiguration> 
         new ZipkinBundle<HelloWorldConfiguration>(getName()) {
           @Override
           public ZipkinFactory getZipkinFactory(HelloWorldConfiguration configuration) {
-            return configuration.getZipkinFactory();
+            return configuration.getZipkin();
           }
         };
     bootstrap.addBundle(zipkinBundle);
   }
 
   @Override
-  public void run(HelloWorldConfiguration configuration, Environment environment) throws Exception {
+  public void run(HelloWorldConfiguration configuration, Environment environment) {
 
     final Optional<HttpTracing> tracing = zipkinBundle.getHttpTracing();
 
-    final Client client;
+    final JerseyClientBuilder clientBuilder;
     if (tracing.isPresent()) {
-      client =
-          new ZipkinClientBuilder(environment, tracing.get())
-              .build(configuration.getZipkinClient());
+      clientBuilder = new ZipkinClientBuilder(environment, tracing.get());
     } else {
-      final ZipkinClientConfiguration clientConfig = configuration.getZipkinClient();
-      client =
-          new JerseyClientBuilder(environment)
-              .using(clientConfig)
-              .build(clientConfig.getServiceName());
+      clientBuilder = new JerseyClientBuilder(environment);
     }
+
+    final Client client = clientBuilder.using(configuration.getZipkinClient()).build(getName());
 
     // Register resources
     final HelloWorldResource resource = new HelloWorldResource(client);

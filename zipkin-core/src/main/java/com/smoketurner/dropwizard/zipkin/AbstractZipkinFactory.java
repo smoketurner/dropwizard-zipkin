@@ -32,12 +32,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.lifecycle.Managed;
 import io.dropwizard.setup.Environment;
+import io.dropwizard.util.Strings;
 import io.dropwizard.validation.PortRange;
 import java.util.Optional;
 import javax.annotation.Nullable;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,16 +50,17 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractZipkinFactory implements ZipkinFactory {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractZipkinFactory.class);
-  private static final int DEFAULT_DW_PORT = 8080;
 
   private boolean enabled = true;
 
   @Nullable private String serviceName;
 
-  @NotEmpty private String serviceHost = "127.0.0.1";
+  // TODO: This must be an IP address. consider renaming
+  @Nullable private String serviceHost;
 
-  @PortRange private int servicePort = DEFAULT_DW_PORT;
+  @Nullable private Integer servicePort;
 
+  // TODO: This is not a rate, rather a probability. Rate is N traces/second via RateLimitingSampler
   @Min(0)
   @Max(1)
   private float sampleRate = 1.0f;
@@ -75,6 +76,7 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
   @Nullable private HttpResponseParser serverResponseParser;
   @Nullable private SamplerFunction<HttpRequest> serverSampler;
 
+  private boolean supportsJoin = true;
   private boolean traceId128Bit = false;
 
   @JsonProperty
@@ -96,7 +98,7 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
 
   @Override
   @JsonProperty
-  public void setServiceName(String serviceName) {
+  public void setServiceName(@Nullable String serviceName) {
     this.serviceName = serviceName;
   }
 
@@ -106,17 +108,17 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
   }
 
   @JsonProperty
-  public void setServiceHost(String serviceHost) {
+  public void setServiceHost(@Nullable String serviceHost) {
     this.serviceHost = serviceHost;
   }
 
   @JsonProperty
-  public int getServicePort() {
+  public Integer getServicePort() {
     return servicePort;
   }
 
   @JsonProperty
-  public void setServicePort(int servicePort) {
+  public void setServicePort(@Nullable Integer servicePort) {
     this.servicePort = servicePort;
   }
 
@@ -141,6 +143,16 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
   @JsonIgnore
   public void setSampler(@Nullable Sampler sampler) {
     this.sampler = sampler;
+  }
+
+  @JsonProperty
+  public boolean getSupportsJoin() {
+    return supportsJoin;
+  }
+
+  @JsonProperty
+  public void setSupportsJoin(boolean supportsJoin) {
+    this.supportsJoin = supportsJoin;
   }
 
   @JsonProperty
@@ -241,28 +253,36 @@ public abstract class AbstractZipkinFactory implements ZipkinFactory {
    * Build a new {@link HttpTracing} instance for interfacing with Zipkin
    *
    * @param environment Environment
-   * @param reporter reporter
+   * @param zipkinSpanHandler how to send spans to Zipkin
    * @return HttpTracing instance
    */
   protected Optional<HttpTracing> buildTracing(
-      final Environment environment, final SpanHandler reporter) {
+      final Environment environment, final SpanHandler zipkinSpanHandler) {
 
-    LOGGER.info(
-        "Registering Zipkin service ({}) at <{}:{}>", serviceName, serviceHost, servicePort);
-
-    final Tracing tracing =
+    final Tracing.Builder tracingBuilder =
         Tracing.newBuilder()
+            .sampler(getSampler())
+            .supportsJoin(supportsJoin)
+            .traceId128Bit(traceId128Bit)
             .currentTraceContext(
                 ThreadLocalCurrentTraceContext.newBuilder()
                     .addScopeDecorator(MDCScopeDecorator.get())
                     .build())
-            .localIp(serviceHost)
-            .localPort(servicePort)
-            .addSpanHandler(reporter)
-            .localServiceName(serviceName)
-            .sampler(getSampler())
-            .traceId128Bit(traceId128Bit)
-            .build();
+            .addSpanHandler(zipkinSpanHandler);
+
+    if (!Strings.isNullOrEmpty(serviceName)) {
+      tracingBuilder.localServiceName(serviceName);
+    } else {
+      tracingBuilder.localServiceName(environment.getName());
+    }
+
+    // TODO: see if we can read this from the environment
+    if (!Strings.isNullOrEmpty(serviceHost)) tracingBuilder.localIp(serviceHost);
+    if (servicePort != null) tracingBuilder.localPort(servicePort);
+
+    final Tracing tracing = tracingBuilder.build();
+
+    LOGGER.info("Registering Zipkin {}", tracing);
 
     final HttpTracing.Builder httpTracingBuilder = HttpTracing.newBuilder(tracing);
     if (clientParser != null) httpTracingBuilder.clientParser(clientParser);

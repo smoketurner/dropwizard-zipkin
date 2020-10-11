@@ -21,15 +21,20 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 public class ZipkinClientConfiguration extends JerseyClientConfiguration {
 
-  @NotEmpty private String serviceName = "";
+  private String serviceName;
 
   @JsonProperty
   public String getServiceName() {
     return serviceName;
   }
 
+  /**
+   * Sets {@code span.remoteServiceName} in spans associated with this client.
+   *
+   * @param serviceName the service name this client will call
+   */
   @JsonProperty
-  public void setServiceName(final String serviceName) {
+  public void setServiceName(@NotEmpty final String serviceName) {
     this.serviceName = serviceName;
   }
 }
