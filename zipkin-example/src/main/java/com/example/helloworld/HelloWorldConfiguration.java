@@ -31,7 +31,7 @@ public class HelloWorldConfiguration extends Configuration {
   private final ZipkinClientConfiguration zipkinClient = new ZipkinClientConfiguration();
 
   @JsonProperty
-  public ZipkinFactory getZipkinFactory() {
+  public ZipkinFactory getZipkin() {
     return zipkin;
   }
 
