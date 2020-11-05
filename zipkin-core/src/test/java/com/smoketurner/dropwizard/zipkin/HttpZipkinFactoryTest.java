@@ -51,4 +51,31 @@ public class HttpZipkinFactoryTest {
     assertThat(httpFactory.getBaseUrl()).isEqualTo("http://example.com:1234/zipkin");
     assertThat(httpFactory.getReportTimeout()).isEqualTo(Duration.days(3));
   }
+
+  @Test
+  public void endpointResolutionShouldCarryFullBaseUrl() {
+    HttpZipkinFactory factory = new HttpZipkinFactory();
+    factory.setBaseUrl("http://example.com:1234/");
+    assertThat(factory.resolveEndpoint()).isEqualTo("http://example.com:1234/api/v2/spans");
+
+    factory = new HttpZipkinFactory();
+    factory.setBaseUrl("http://example.com:1234");
+    assertThat(factory.resolveEndpoint()).isEqualTo("http://example.com:1234/api/v2/spans");
+
+    factory = new HttpZipkinFactory();
+    factory.setBaseUrl("http://example.com:1234/zipkin");
+    assertThat(factory.resolveEndpoint()).isEqualTo("http://example.com:1234/zipkin/api/v2/spans");
+
+    factory = new HttpZipkinFactory();
+    factory.setBaseUrl("http://example.com:1234/zipkin/");
+    assertThat(factory.resolveEndpoint()).isEqualTo("http://example.com:1234/zipkin/api/v2/spans");
+  }
+
+  @Test
+  public void explicitEndpointHasAPirorityOverBaseUrl() {
+    HttpZipkinFactory factory = new HttpZipkinFactory();
+    factory.setBaseUrl("http://example.com:1234/");
+    factory.setEndpoint("http://example.com:1234/spans");
+    assertThat(factory.resolveEndpoint()).isEqualTo("http://example.com:1234/spans");
+  }
 }

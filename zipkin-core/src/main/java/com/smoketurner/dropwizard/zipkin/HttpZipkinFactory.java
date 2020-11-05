@@ -24,7 +24,6 @@ import io.dropwizard.validation.MinDuration;
 import java.net.URI;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +34,8 @@ public class HttpZipkinFactory extends ReportingZipkinFactory {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HttpZipkinFactory.class);
 
-  @NotEmpty private String baseUrl = "http://127.0.0.1:9411/";
+  private String baseUrl = "http://127.0.0.1:9411/";
+  private String endpoint;
 
   @NotNull
   @MinDuration(value = 0, unit = TimeUnit.MILLISECONDS)
@@ -50,9 +50,29 @@ public class HttpZipkinFactory extends ReportingZipkinFactory {
     return baseUrl;
   }
 
+  /**
+   *
+   * @param baseUrl will be used to form an endpoint URL if explicit endpoint is not provided
+   * @see #setEndpoint(String) has a priority if defined
+   */
   @JsonProperty
   public void setBaseUrl(String baseUrl) {
     this.baseUrl = baseUrl;
+  }
+
+  @JsonProperty
+  public String getEndpoint() {
+    return endpoint;
+  }
+
+  /**
+   *
+   * @param endpoint full endpoint to spans API.
+   * @see #setBaseUrl(String) will be used to construct a default endpoint if explicit endpoint is not defined
+   */
+  @JsonProperty
+  public void setEndpoint(String endpoint) {
+    this.endpoint = endpoint;
   }
 
   @JsonProperty
@@ -63,6 +83,20 @@ public class HttpZipkinFactory extends ReportingZipkinFactory {
   @JsonProperty
   public void setReadTimeout(Duration readTimeout) {
     this.readTimeout = readTimeout;
+  }
+
+  protected String resolveEndpoint() {
+    if (endpoint != null && !endpoint.isEmpty()) {
+      return endpoint;
+    }
+    String basePart = baseUrl.trim();
+    if (!basePart.endsWith("/")) {
+      basePart = basePart + "/";
+    }
+    URI baseURI = URI.create(basePart);
+    String fullRelativePart = baseURI.getPath() + "api/v2/spans";
+    URI endpointURI = baseURI.resolve(fullRelativePart);
+    return endpointURI.toString();
   }
 
   /**
@@ -77,12 +111,10 @@ public class HttpZipkinFactory extends ReportingZipkinFactory {
       LOGGER.warn("Zipkin tracing is disabled");
       return Optional.empty();
     }
-
-    final String endpoint = URI.create(baseUrl).resolve("api/v2/spans").toString();
-
+    String resolvedEndpoint = resolveEndpoint();
     final URLConnectionSender sender =
         URLConnectionSender.newBuilder()
-            .endpoint(endpoint)
+            .endpoint(resolvedEndpoint)
             .readTimeout(Math.toIntExact(readTimeout.toMilliseconds()))
             .connectTimeout(Math.toIntExact(connectTimeout.toMilliseconds()))
             .build();
