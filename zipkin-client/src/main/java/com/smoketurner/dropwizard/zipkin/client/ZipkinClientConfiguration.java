@@ -15,9 +15,9 @@
  */
 package com.smoketurner.dropwizard.zipkin.client;
 
-import javax.validation.constraints.NotEmpty;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.client.JerseyClientConfiguration;
+import javax.validation.constraints.NotEmpty;
 
 public class ZipkinClientConfiguration extends JerseyClientConfiguration {
 

@@ -51,7 +51,6 @@ public class HttpZipkinFactory extends ReportingZipkinFactory {
   }
 
   /**
-   *
    * @param baseUrl will be used to form an endpoint URL if explicit endpoint is not provided
    * @see #setEndpoint(String) has a priority if defined
    */
@@ -66,9 +65,9 @@ public class HttpZipkinFactory extends ReportingZipkinFactory {
   }
 
   /**
-   *
    * @param endpoint full endpoint to spans API.
-   * @see #setBaseUrl(String) will be used to construct a default endpoint if explicit endpoint is not defined
+   * @see #setBaseUrl(String) will be used to construct a default endpoint if explicit endpoint is
+   *     not defined
    */
   @JsonProperty
   public void setEndpoint(String endpoint) {
