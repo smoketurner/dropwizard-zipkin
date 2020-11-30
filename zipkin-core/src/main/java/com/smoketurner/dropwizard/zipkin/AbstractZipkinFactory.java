@@ -15,6 +15,14 @@
  */
 package com.smoketurner.dropwizard.zipkin;
 
+import java.util.Optional;
+import javax.annotation.Nullable;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import brave.Tracing;
 import brave.context.slf4j.MDCScopeDecorator;
 import brave.handler.SpanHandler;
@@ -28,18 +36,9 @@ import brave.jersey.server.TracingApplicationEventListener;
 import brave.propagation.ThreadLocalCurrentTraceContext;
 import brave.sampler.Sampler;
 import brave.sampler.SamplerFunction;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.lifecycle.Managed;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.util.Strings;
-import io.dropwizard.validation.PortRange;
-import java.util.Optional;
-import javax.annotation.Nullable;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @see ConsoleZipkinFactory
