@@ -59,7 +59,7 @@ public class HelloWorldApplication extends Application<HelloWorldConfiguration> 
 
     final JerseyClientBuilder clientBuilder;
     if (tracing.isPresent()) {
-      clientBuilder = new ZipkinClientBuilder(environment, tracing.get());
+      clientBuilder = new ZipkinClientBuilder(environment, tracing.get().clientOf(configuration.getZipkinClient().getServiceName()));
     } else {
       clientBuilder = new JerseyClientBuilder(environment);
     }
