@@ -26,7 +26,7 @@ zipkin:
   readTimeout: 60s
 
 zipkinClient:
-  serviceName: hello-world
+  serviceName: hello-world-client
   timeout: 2s
 
 # HTTP-specific options.
